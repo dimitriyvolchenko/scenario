@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-15T10:39:36.346Z",
+  "savedAt": "2026-09-15T11:45:02.241Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -12,8 +12,15 @@
     "tomorrow": [],
     "days": {},
     "my": [],
+    "extra": {},
     "start": "",
     "due": "",
     "view": "today"
+  },
+  "prefs": {
+    "lang": "en",
+    "bd": "#B9B2A6",
+    "bdw": 1.5,
+    "step": ""
   }
 }
