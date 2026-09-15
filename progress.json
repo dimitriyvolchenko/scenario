@@ -1,14 +1,12 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-15T10:39:10.567Z",
+  "savedAt": "2026-09-15T10:39:34.858Z",
   "device": "Компьютер",
   "lead": "",
-  "done": 1,
+  "done": 0,
   "total": 528,
-  "marks": {
-    "t1_0": true
-  },
+  "marks": {},
   "plan": {
     "today": [],
     "tomorrow": [],
