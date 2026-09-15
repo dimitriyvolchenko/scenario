@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-15T11:49:53.802Z",
+  "savedAt": "2026-09-15T11:52:47.562Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -11,13 +11,7 @@
     "today": [],
     "tomorrow": [],
     "days": {},
-    "my": [
-      {
-        "id": "xiyarq0y",
-        "t": "проверка",
-        "items": []
-      }
-    ],
+    "my": [],
     "extra": {
       "ph0": [
         {
