@@ -251,7 +251,7 @@ details.help ol{padding-left:20px;margin:8px 0}
   <div class="top-sp"></div>
   <span class="pcount" id="pcount">0 / 0</span>
   <button class="btn" id="nextBtn">▸ Дальше</button>
-  <button class="btn" id="syncBtn"><span class="dot" id="syDot"></span>Синхрон</button>
+  <button class="btn" id="syncBtn"><span class="dot" id="syDot"></span><span id="syncLbl">Синхрон</span></button>
   <button class="btn" id="themeBtn">☾ Тёмная</button>
   <button class="btn btn-acc" id="resetBtn">Сброс</button>
  </div>
@@ -383,13 +383,14 @@ details.help ol{padding-left:20px;margin:8px 0}
  <div class="ov-box">
   <div class="ov-head"><h3>Синхронизация через ваш GitHub</h3><button class="btn" id="syClose">Закрыть</button></div>
   <div class="ov-body">
-   <p class="sy-box">Один файл прогресса лежит в вашем репозитории. Каждое устройство пишет в него и читает из него —
-   и карта выглядит одинаково на компьютере и на айпаде. Ключ хранится отдельно на каждом устройстве и никогда
-   не попадает внутрь файла прогресса.</p>
+   <p class="sy-box"><b>Читать — без ключа.</b> Если репозиторий публичный, страница сама подтягивает последний
+   прогресс при каждом открытии: зашли с телефона — галочки уже те, что вы поставили на компьютере.<br>
+   <b>Ключ нужен только чтобы сохранять.</b> Вставьте его на тех устройствах, с которых будете отмечать шаги.
+   Ключ хранится отдельно на каждом устройстве и внутрь файла прогресса не попадает.</p>
 
    <div class="fld"><label>Репозиторий</label>
     <input id="syRepo" placeholder="логин/название" autocapitalize="off" autocorrect="off" spellcheck="false">
-    <div class="hint">Как в адресе: <code>ivanov/svyatie90</code>. Репозиторий может быть и приватным.</div></div>
+    <div class="hint">Заполняется само, если страница открыта с GitHub Pages. Иначе впишите: <code>логин/репозиторий</code>.</div></div>
 
    <div class="row2">
     <div class="fld"><label>Файл</label><input id="syPath" placeholder="progress.json" autocapitalize="off" spellcheck="false"></div>
@@ -404,12 +405,12 @@ details.help ol{padding-left:20px;margin:8px 0}
     <input id="syDevice" placeholder="iPad"></div>
 
    <div class="btns">
-    <button class="btn primary" id="syPush">Отправить</button>
-    <button class="btn" id="syPull">Забрать</button>
-    <button class="btn" id="syMerge">Слить</button>
+    <button class="btn primary" id="syPush">Сохранить</button>
+    <button class="btn" id="syPull">Загрузить</button>
+    <button class="btn" id="syMerge">Объединить</button>
    </div>
    <div class="btns">
-    <button class="btn" id="syAuto">авто: выкл</button>
+    <button class="btn" id="syAuto">авто-сохранение: вкл</button>
     <button class="btn" id="syLead">сделать главным</button>
     <button class="btn" id="syCheck">Проверить</button>
    </div>
@@ -495,72 +496,102 @@ $("#fab").addEventListener("click",jumpNext);
 update();
 
 /* ======================= СИНХРОНИЗАЦИЯ ЧЕРЕЗ СВОЙ GITHUB =======================
-   Файл прогресса лежит в репозитории пользователя. Ключ живёт в отдельном ящике
-   localStorage и никогда не попадает внутрь файла прогресса. */
-var GHKEY=KEY+":gh", ghMem=null;
+   Файл прогресса лежит рядом с этой страницей в вашем репозитории.
+   ЧТЕНИЕ работает без ключа, если репозиторий публичный: открыл страницу —
+   последний прогресс уже подтянулся. Ключ нужен только чтобы СОХРАНЯТЬ.
+   Ключ живёт в отдельном ящике на каждом устройстве и внутрь файла не попадает. */
+var GHKEY=KEY+":gh", ghMem=null, pollTimer=null;
 function guessDevice(){var u=navigator.userAgent||"";
  if(/iPhone/.test(u))return "iPhone";
  if(/iPad/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1))return "iPad";
  if(/Android/.test(u))return /Mobile/.test(u)?"Телефон Android":"Планшет Android";
  if(/Macintosh/.test(u))return "Mac";
  return "Компьютер";}
+function detectRepo(){
+ var h=location.hostname||"", parts=location.pathname.split("/").filter(Boolean);
+ if(/\.github\.io$/i.test(h)){
+  var owner=h.replace(/\.github\.io$/i,"");
+  var repo=(parts.length&&!/\.html?$/i.test(parts[0]))?parts[0]:(owner+".github.io");
+  return owner+"/"+repo;}
+ return "";}
 function ghConf(){
  if(ghMem)return ghMem;
- var o={repo:"",path:"progress.json",branch:"main",token:"",auto:false,stamp:"",at:0,dirty:false,
-        device:"",lead:false,remoteDevice:"",remoteLead:"",remoteAt:"",remoteDone:null};
+ var o={repo:"",path:"progress.json",branch:"main",token:"",auto:true,stamp:"",at:0,dirty:false,
+        device:"",lead:false,remoteDevice:"",remoteLead:"",remoteAt:"",remoteDone:null,lastPull:0};
  try{var raw=localStorage.getItem(GHKEY); if(raw){var p=JSON.parse(raw);Object.keys(p||{}).forEach(function(k){o[k]=p[k]})}}catch(e){}
  if(!o.device)o.device=guessDevice();
+ if(!o.repo)o.repo=detectRepo();
  ghMem=o;return o;}
 function ghSave(){try{localStorage.setItem(GHKEY,JSON.stringify(ghConf()))}catch(e){}}
-function ghReady(){var c=ghConf();return !!(c.repo&&c.token&&c.path)}
+function canRead(){var c=ghConf();return !!(c.repo&&c.path)}
+function canWrite(){var c=ghConf();return !!(c.repo&&c.path&&c.token)}
 function ghLeads(){var c=ghConf();return !!(c.lead||!c.remoteLead)}
 function ghUrl(){var c=ghConf();
  return "https://api.github.com/repos/"+c.repo.replace(/^\/+|\/+$/g,"")+"/contents/"+c.path.replace(/^\/+/,"")}
-function ghHead(){return{"Authorization":"Bearer "+ghConf().token,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"}}
+function rawUrl(){var c=ghConf();
+ return "https://raw.githubusercontent.com/"+c.repo.replace(/^\/+|\/+$/g,"")+"/"+(c.branch||"main")+"/"+c.path.replace(/^\/+/,"")}
+function ghHead(){var c=ghConf(),h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};
+ if(c.token)h["Authorization"]="Bearer "+c.token;return h}
 function b64enc(str){var by=new TextEncoder().encode(str),out="",CH=0x8000;
  for(var i=0;i<by.length;i+=CH)out+=String.fromCharCode.apply(null,by.subarray(i,i+CH));return btoa(out)}
 function b64dec(b){var bin=atob(String(b).replace(/\s+/g,"")),a=new Uint8Array(bin.length);
  for(var i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new TextDecoder().decode(a)}
 function hhmm(d){d=d||new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
-function when(iso){if(!iso)return "";var d=new Date(iso);return d.toLocaleDateString("ru-RU",{day:"numeric",month:"long"})+", "+hhmm(d)}
+function when(iso){if(!iso)return "";var d=new Date(iso),n=new Date();
+ return d.toDateString()===n.toDateString()?("сегодня в "+hhmm(d)):(d.toLocaleDateString("ru-RU",{day:"numeric",month:"long"})+", "+hhmm(d))}
 function ghErr(e){var m=(e&&e.message)||String(e);
  if(m.indexOf("401")===0)return "ключ не принят — проверьте его и права";
  if(m.indexOf("403")===0)return "GitHub отказал: ключ, похоже, не может сюда писать. В ключе: Repository access = Only select repositories (отметить этот), Contents = Read and write";
- if(m.indexOf("404")===0)return "нет такого репозитория или ветки — проверьте название";
- if(m.indexOf("409")===0)return "файл в GitHub изменился в ту же секунду — сначала заберите копию";
+ if(m.indexOf("404")===0)return "нет такого репозитория, ветки или файла — проверьте название";
+ if(m.indexOf("409")===0)return "файл изменился в ту же секунду — сначала «Загрузить»";
  if(m.indexOf("Failed to fetch")>-1)return "нет связи с GitHub";
  return m;}
 function syState(msg,bad){var el=$("#syState");
  if(el){el.textContent=msg||"";el.style.color=bad?"var(--accent)":""}
- var d=$("#syDot");if(d){d.classList.toggle("on",!bad&&ghReady());d.classList.toggle("bad",!!bad)}}
+ var d=$("#syDot");if(d){d.classList.toggle("bad",!!bad);d.classList.toggle("on",!bad&&canRead())}}
+function syBtnLabel(){var b=$("#syncLbl"),c=ghConf();if(!b)return;
+ if(!canRead()){b.textContent="Синхрон";return}
+ if(c.dirty){b.textContent="не сохранено";return}
+ b.textContent=c.at?hhmm(new Date(c.at)):"Синхрон";}
 function paintSyncDot(){var b=$("#syncBtn");if(!b)return;var c=ghConf();
- b.classList.toggle("hasnew",!!(ghReady()&&c.dirty&&!(c.auto&&ghLeads())));
- var d=$("#syDot");if(d&&!d.classList.contains("bad"))d.classList.toggle("on",ghReady())}
+ b.classList.toggle("hasnew",!!(canWrite()&&c.dirty));
+ var d=$("#syDot");if(d&&!d.classList.contains("bad"))d.classList.toggle("on",canRead());
+ syBtnLabel()}
 function payloadText(){var c=ghConf();
  return JSON.stringify({format:"tbv_montage_opening",version:1,savedAt:new Date().toISOString(),
   device:c.device||"",lead:c.lead?(c.device||""):(c.remoteLead||""),
   done:Object.keys(state).length,total:$$(".step input").length,marks:state},null,2)}
 function applyRemote(text,merge){
- var o;try{o=JSON.parse(text)}catch(e){return false}
- if(!o||!o.marks)return false;
+ var o;try{o=JSON.parse(text)}catch(e){return null}
+ if(!o||!o.marks)return null;
+ var before=Object.keys(state).length;
  if(!merge)state={};
  Object.keys(o.marks).forEach(function(k){if(o.marks[k])state[k]=true});
  store.write(state);
  $$(".step input").forEach(function(i){i.checked=!!state[i.dataset.k]});
  update();
  var c=ghConf();c.stamp=o.savedAt||"";c.at=Date.now();if(!merge)c.dirty=false;ghSave();
- return true;}
-function ghFetchRemote(){var c=ghConf();
- return fetch(ghUrl()+"?ref="+encodeURIComponent(c.branch||"main")+"&t="+Date.now(),{headers:ghHead(),cache:"no-store"})
+ return {changed:Object.keys(state).length!==before, done:o.done, device:o.device};}
+function readRemote(){
+ var c=ghConf();
+ if(c.token){
+  return fetch(ghUrl()+"?ref="+encodeURIComponent(c.branch||"main")+"&t="+Date.now(),{headers:ghHead(),cache:"no-store"})
+   .then(function(r){if(r.status===404)return null;
+    if(!r.ok)return r.text().then(function(t){throw new Error(r.status+" "+t.slice(0,120))});
+    return r.json()}).then(function(j){return j?{text:b64dec(j.content||""),sha:j.sha,size:j.size}:null})}
+ return fetch(rawUrl()+"?t="+Date.now(),{cache:"no-store"})
   .then(function(r){if(r.status===404)return null;
-   if(!r.ok)return r.text().then(function(t){throw new Error(r.status+" "+t.slice(0,120))});
-   return r.json()})}
+   if(!r.ok)throw new Error(r.status+" при чтении файла");
+   return r.text()}).then(function(t){return t?{text:t,sha:null}:null})}
 function ghPush(quiet){
- if(!ghReady()){syState("Сначала впишите репозиторий и ключ",true);return Promise.resolve(false)}
+ if(!canWrite()){syState("Чтобы сохранять, нужен ключ — вставьте его выше",true);return Promise.resolve(false)}
  var c=ghConf(),text=payloadText();
- if(!quiet)syState("Отправляю…");
- return ghFetchRemote().then(function(cur){
-  var body={message:"монтажная карта: прогресс "+new Date().toISOString().slice(0,16).replace("T"," "),
+ if(!quiet)syState("Сохраняю…");
+ return fetch(ghUrl()+"?ref="+encodeURIComponent(c.branch||"main")+"&t="+Date.now(),{headers:ghHead(),cache:"no-store"})
+ .then(function(r){if(r.status===404)return null;
+  if(!r.ok)return r.text().then(function(t){throw new Error(r.status+" "+t.slice(0,120))});return r.json()})
+ .then(function(cur){
+  var body={message:"монтажная карта: "+Object.keys(state).length+"/"+$$(".step input").length+" · "+(c.device||""),
             content:b64enc(text),branch:c.branch||"main"};
   if(cur&&cur.sha)body.sha=cur.sha;
   return fetch(ghUrl(),{method:"PUT",keepalive:true,
@@ -571,56 +602,57 @@ function ghPush(quiet){
   c.at=Date.now();c.dirty=false;c.remoteDevice=c.device;c.remoteAt=new Date().toISOString();
   c.remoteDone=Object.keys(state).length;if(c.lead)c.remoteLead=c.device;
   ghSave();paintSyncDot();syPaint();
-  syState("Отправлено в "+hhmm()+" с устройства «"+(c.device||"это")+"» — остальные подхватят при открытии");
+  syState("Сохранено в "+hhmm()+" · отмечено "+c.remoteDone+" из "+$$(".step input").length);
+  if(!quiet)toast("Прогресс сохранён в GitHub");
   return true})
- .catch(function(e){syState(ghErr(e),true);return false})}
+ .catch(function(e){syState(ghErr(e),true);if(!quiet)toast("Не сохранилось — откройте синхрон");return false})}
 function ghPull(quiet,merge){
- if(!ghReady()){syState("Сначала впишите репозиторий и ключ",true);return Promise.resolve(false)}
- if(!quiet)syState(merge?"Сливаю…":"Читаю…");
- return ghFetchRemote().then(function(cur){
-  if(!cur){syState("В этом репозитории ещё нет файла прогресса — нажмите «Отправить»",true);return false}
-  var text=b64dec(cur.content||""),stamp="",rdev="",rlead="",rdone=null;
-  try{var o=JSON.parse(text);stamp=o.savedAt||"";rdev=o.device||"";rlead=o.lead||"";rdone=o.done}catch(e){}
-  var c=ghConf();c.remoteDevice=rdev;c.remoteLead=rlead;c.remoteAt=stamp;c.remoteDone=rdone;ghSave();
+ if(!canRead()){if(!quiet)syState("Впишите репозиторий",true);return Promise.resolve(false)}
+ if(!quiet)syState(merge?"Объединяю…":"Загружаю…");
+ return readRemote().then(function(cur){
+  var c=ghConf();c.lastPull=Date.now();ghSave();
+  if(!cur){if(!quiet)syState("Файла прогресса ещё нет — нажмите «Сохранить», он создастся сам",true);return false}
+  var stamp="",rdev="",rlead="",rdone=null;
+  try{var o=JSON.parse(cur.text);stamp=o.savedAt||"";rdev=o.device||"";rlead=o.lead||"";rdone=o.done}catch(e){}
+  c.remoteDevice=rdev;c.remoteLead=rlead;c.remoteAt=stamp;c.remoteDone=rdone;ghSave();
   if(rlead&&c.device&&rlead!==c.device&&c.lead){c.lead=false;ghSave()}
   if(quiet){
-   if(!stamp||stamp===c.stamp){syPaint();return false}
-   if(c.dirty){syState("В GitHub копия новее, но здесь есть неотправленное — выберите «Отправить» или «Забрать»");
-    toast("В GitHub копия новее — откройте синхронизацию");syPaint();return false}
+   if(!stamp||stamp===c.stamp){syPaint();paintSyncDot();return false}
+   if(c.dirty)merge=true;
   }
-  if(applyRemote(text,merge)){
-   paintSyncDot();syPaint();
-   syState((merge?"Слито с копией из GitHub":"Взято из GitHub")+(stamp?" — сохранено "+when(stamp):"")+(rdev?" с «"+rdev+"»":""));
-   if(!quiet)toast(merge?"Галочки слиты":"Прогресс взят из GitHub");
+  var res=applyRemote(cur.text,merge);
+  if(res){
+   if(quiet&&merge)c.dirty=true;
+   ghSave();paintSyncDot();syPaint();
+   syState((merge?"Объединено с копией":"Загружено")+(stamp?" · "+when(stamp):"")+(rdev?" с «"+rdev+"»":""));
+   if(!quiet)toast(merge?"Галочки объединены":"Прогресс загружен");
+   else if(res.changed)toast("Подтянут прогресс"+(rdev?" с «"+rdev+"»":""));
    return true}
-  syState("Это не файл прогресса этой карты",true);return false})
- .catch(function(e){syState(ghErr(e),true);return false})}
+  if(!quiet)syState("Это не файл прогресса этой карты",true);
+  return false})
+ .catch(function(e){if(!quiet)syState(ghErr(e),true);return false})}
 var ghTimer=null;
 function ghTouched(){
- if(!ghReady())return;var c=ghConf();
+ if(!canRead())return;var c=ghConf();
  if(!c.dirty){c.dirty=true;ghSave();paintSyncDot()}
- if(!c.auto||!ghLeads())return;
+ if(!c.auto||!canWrite()||!ghLeads())return;
  clearTimeout(ghTimer);ghTimer=setTimeout(function(){if(ghConf().dirty)ghPush(true)},6000)}
 function toast(t){
  var d=document.createElement("div");d.textContent=t;
  d.style.cssText="position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:200;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.3)";
  document.body.appendChild(d);setTimeout(function(){d.style.transition="opacity .4s";d.style.opacity="0";
-  setTimeout(function(){d.remove()},420)},2200)}
+  setTimeout(function(){d.remove()},420)},2400)}
 function syPaint(){var c=ghConf(),f=function(id,v){var e=$(id);if(e)e.value=v||""};
  f("#syRepo",c.repo);f("#syPath",c.path||"progress.json");f("#syBranch",c.branch||"main");f("#syToken",c.token);f("#syDevice",c.device);
- var a=$("#syAuto");if(a){a.textContent="авто: "+(c.auto?"вкл":"выкл");a.classList.toggle("primary",!!c.auto)}
+ var a=$("#syAuto");if(a){a.textContent="авто-сохранение: "+(c.auto?"вкл":"выкл");a.classList.toggle("primary",!!c.auto)}
  var L=$("#syLead");if(L){L.textContent=c.lead?"главное: это устройство":"сделать главным";L.classList.toggle("primary",!!c.lead)}
  var box=$("#syLeadBox");
  if(box){
-  var who=c.remoteLead?(c.remoteLead===c.device?"<b>это устройство</b>":"<b>"+c.remoteLead+"</b>"):"<b>не выбрано</b>";
-  var rule=c.remoteLead?(ghLeads()?"Это устройство отправляет само, остальные только забирают."
-    :"Отправляет главное устройство. Это — только забирает; нажмите «Отправить», когда нужно отдать свои галочки.")
-   :"Главное устройство не выбрано, поэтому каждое отправляет само. Так нормально, пока вы работаете по очереди.";
-  var last=c.remoteAt?("Копия в GitHub сохранена "+when(c.remoteAt)+(c.remoteDevice?" с «"+c.remoteDevice+"»":"")+
-    (c.remoteDone!=null?(", отмечено "+c.remoteDone):"")+"."):"С GitHub на этом устройстве ещё ничего не читали.";
-  var here="Здесь отмечено "+Object.keys(state).length+" из "+$$(".step input").length+
-    (c.dirty?" · <b style='color:var(--accent)'>есть неотправленное</b>":" · всё отправлено");
-  box.innerHTML="Главное устройство: "+who+". "+rule+"<br>"+last+"<br>"+here}
+  var total=$$(".step input").length, here=Object.keys(state).length, lines=[];
+  lines.push("<b>Здесь отмечено "+here+" из "+total+"</b>"+(c.dirty?" · <span style='color:var(--accent)'>есть несохранённое</span>":" · всё сохранено"));
+  lines.push(c.remoteAt?("В GitHub: "+(c.remoteDone!=null?c.remoteDone+" из "+total+", ":"")+"сохранено "+when(c.remoteAt)+(c.remoteDevice?" с «"+c.remoteDevice+"»":"")):"С GitHub пока ничего не читали.");
+  lines.push(canWrite()?"Ключ на этом устройстве есть — можно сохранять.":"Ключа здесь нет: загружать можно, сохранять — нет.");
+  box.innerHTML=lines.join("<br>")}
  paintSyncDot()}
 function syFields(){var c=ghConf();
  c.repo=($("#syRepo").value||"").trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,"").replace(/^\/+|\/+$/g,"");
@@ -639,51 +671,59 @@ function rep(kind,text,fix){
   (fix?'<div class="fix">'+fix+'</div>':""))}
 function ghCheck(){
  rep("clear");var c=syFields();
- if(!c.repo){rep("bad","Не вписан репозиторий","Строка вида <b>логин/название</b> — как в адресе репозитория на GitHub.");return}
+ if(!c.repo){rep("bad","Не вписан репозиторий","Строка вида <b>логин/название</b>. Если страница открыта с GitHub Pages, поле заполняется само.");return}
  rep("ok","Репозиторий: <b>"+c.repo+"</b>, ветка <b>"+c.branch+"</b>, файл <b>"+c.path+"</b>");
- if(!c.token){rep("bad","На этом устройстве нет ключа","Сделайте fine-grained token с правом Contents: Read and write на этот репозиторий и вставьте его в поле выше.");return}
- rep("ok","Ключ на устройстве есть ("+c.token.length+" символов)");
- rep("wait","Спрашиваю GitHub…");
- var H=ghHead();
- fetch("https://api.github.com/user",{headers:H,cache:"no-store"}).then(function(r){
-  if(r.status===401){rep("bad","GitHub не принимает этот ключ","Ключ неверный, просрочен или отозван. Сделайте новый — он показывается один раз.");return null}
-  if(!r.ok)throw new Error(r.status+" на ключе");
-  return r.json()}).then(function(u){
-  if(!u)return;
-  rep("ok","Ключ принят, он принадлежит <b>"+(u.login||"вашему аккаунту")+"</b>");
-  return fetch("https://api.github.com/repos/"+encodeURI(c.repo),{headers:H,cache:"no-store"}).then(function(rr){
-   if(rr.status===404){rep("bad","Ключ не достаёт до репозитория <b>"+c.repo+"</b>","Либо название написано иначе, либо ключ сделан для других репозиториев: откройте ключ → Repository access → Only select repositories → отметьте этот → Update.");return null}
-   if(!rr.ok)throw new Error(rr.status+" на репозитории");
-   return rr.json()}).then(function(rj){
-   if(!rj)return;
-   rep("ok","Репозиторий найден"+(rj.private?" (приватный)":""));
-   if(rj.permissions&&rj.permissions.push===false)rep("bad","Ключ видит репозиторий, но не может в него писать","В ключе: Permissions → Repository permissions → Contents → Read and write, затем Update.");
-   else rep("ok","Права на запись есть");
-   return ghFetchRemote().then(function(cur){
-    if(!cur)rep("wait","Файла прогресса ещё нет — нажмите «Отправить», он создастся сам");
-    else rep("ok","Файл прогресса на месте ("+Math.round((cur.size||0)/1024*10)/10+" КБ)");
+ rep("wait","Пробую прочитать файл прогресса…");
+ readRemote().then(function(cur){
+  if(cur){
+   rep("ok","Файл читается"+(c.token?"":" без ключа — значит репозиторий публичный"));
+   var o=null;try{o=JSON.parse(cur.text)}catch(e){}
+   if(o&&o.marks)rep("ok","Внутри прогресс: отмечено <b>"+(o.done!=null?o.done:Object.keys(o.marks).length)+"</b>"+(o.device?" с «"+o.device+"»":""));
+   else rep("bad","Файл есть, но это не прогресс этой карты","Укажите другое имя файла или сохраните заново.");
+  } else rep("wait","Файла прогресса ещё нет — он создастся при первом сохранении");
+  if(!c.token){rep("wait","Ключа здесь нет: загружать можно, сохранять — нет",
+   "Чтобы сохранять с этого устройства, вставьте fine-grained token с правом Contents: Read and write.");syState("Проверка закончена");return}
+  rep("ok","Ключ на устройстве есть ("+c.token.length+" символов)");
+  return fetch("https://api.github.com/user",{headers:ghHead(),cache:"no-store"}).then(function(r){
+   if(r.status===401){rep("bad","GitHub не принимает этот ключ","Ключ неверный, просрочен или отозван. Сделайте новый — он показывается один раз.");return null}
+   if(!r.ok)throw new Error(r.status+" на ключе");return r.json()}).then(function(u){
+   if(!u)return;
+   rep("ok","Ключ принят, он принадлежит <b>"+(u.login||"вашему аккаунту")+"</b>");
+   return fetch("https://api.github.com/repos/"+encodeURI(c.repo),{headers:ghHead(),cache:"no-store"}).then(function(rr){
+    if(rr.status===404){rep("bad","Ключ не достаёт до репозитория <b>"+c.repo+"</b>","Откройте ключ на GitHub → Repository access → Only select repositories → отметьте этот → Update.");return null}
+    if(!rr.ok)throw new Error(rr.status+" на репозитории");return rr.json()}).then(function(rj){
+    if(!rj)return;
+    if(rj.permissions&&rj.permissions.push===false)rep("bad","Ключ видит репозиторий, но писать не может","В ключе: Permissions → Repository permissions → Contents → Read and write → Update.");
+    else rep("ok","Права на запись есть — можно сохранять");
     syState("Проверка закончена")})})})
  .catch(function(e){rep("bad","Не получилось: "+ghErr(e));syState(ghErr(e),true)})}
-/* кнопки панели */
 $("#syncBtn").addEventListener("click",function(){syPaint();$("#syOverlay").classList.add("show")});
 $("#syClose").addEventListener("click",function(){$("#syOverlay").classList.remove("show")});
 $("#syOverlay").addEventListener("click",function(e){if(e.target===this)this.classList.remove("show")});
 $("#syPush").addEventListener("click",function(){syFields();ghPush(false)});
 $("#syPull").addEventListener("click",function(){syFields();
- if(Object.keys(state).length&&!confirm("Забрать копию из GitHub? Галочки на этом устройстве будут заменены. Чтобы объединить, нажмите «Слить»."))return;
+ if(Object.keys(state).length&&!confirm("Загрузить копию из GitHub? Галочки на этом устройстве будут заменены. Чтобы объединить — нажмите «Объединить»."))return;
  ghPull(false,false)});
 $("#syMerge").addEventListener("click",function(){syFields();ghPull(false,true)});
 $("#syAuto").addEventListener("click",function(){var c=syFields();c.auto=!c.auto;ghSave();syPaint();
- syState(c.auto?"Авто включено: отправляю через несколько секунд после правок":"Авто выключено")});
+ syState(c.auto?"Авто-сохранение включено: отправляю через несколько секунд после правок":"Авто-сохранение выключено — сохраняйте кнопкой")});
 $("#syLead").addEventListener("click",function(){var c=syFields();c.lead=!c.lead;ghSave();syPaint();
- syState(c.lead?"Это устройство теперь главное — не забудьте отправить":"Это устройство больше не главное")});
+ syState(c.lead?"Это устройство теперь главное — авто-сохранение работает только с него":"Это устройство больше не главное")});
 $("#syCheck").addEventListener("click",ghCheck);
 ["#syRepo","#syPath","#syBranch","#syToken","#syDevice"].forEach(function(id){
  var el=$(id);if(el)el.addEventListener("change",function(){syFields();syPaint()})});
-/* автозабор при открытии и отправка при уходе */
-setTimeout(function(){if(ghReady())ghPull(true,false)},900);
+function autoPull(force){
+ var c=ghConf();if(!canRead())return;
+ var gap=c.token?60000:180000;
+ if(!force&&Date.now()-(c.lastPull||0)<gap)return;
+ ghPull(true,false)}
+setTimeout(function(){autoPull(true)},700);
 document.addEventListener("visibilitychange",function(){
- if(document.visibilityState==="hidden"){var c=ghConf();if(c.auto&&c.dirty&&ghLeads()&&ghReady())ghPush(true)}});
+ var c=ghConf();
+ if(document.visibilityState==="visible")autoPull(false);
+ else if(c.auto&&c.dirty&&canWrite()&&ghLeads())ghPush(true)});
+window.addEventListener("focus",function(){autoPull(false)});
+pollTimer=setInterval(function(){if(document.visibilityState==="visible")autoPull(false)},60000);
 paintSyncDot();
 
 </script>
