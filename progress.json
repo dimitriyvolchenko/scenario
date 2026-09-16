@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:50:45.444Z",
-  "device": "iPad",
+  "savedAt": "2026-09-16T17:50:52.497Z",
+  "device": "Компьютер",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -40,13 +40,17 @@
     },
     "dim": "",
     "spot": "ph0",
-    "spotLow": ""
+    "spotLow": "",
+    "porder": [],
+    "pnames": {},
+    "tnames": {},
+    "torder": {}
   },
   "prefs": {
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Workspace arrangement!🥷🏻",
+    "step": "Workspace arrangement!2",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
