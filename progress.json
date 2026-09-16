@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:45:28.639Z",
-  "device": "iPhone",
+  "savedAt": "2026-09-16T17:47:46.285Z",
+  "device": "iPad",
   "lead": "",
   "done": 0,
-  "total": 528,
+  "total": 529,
   "marks": {},
   "plan": {
     "today": [],
@@ -30,19 +30,27 @@
     "gone": {},
     "wait": {},
     "pflag": {
-      "ph0": {
+      "ph2": {
         "more": false
+      },
+      "ph0": {
+        "more": true,
+        "edit": false
       }
     },
     "dim": "",
     "spot": "ph0",
-    "spotLow": ""
+    "spotLow": "",
+    "porder": [],
+    "pnames": {},
+    "tnames": {},
+    "torder": {}
   },
   "prefs": {
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Prepare workspace (workspace)",
+    "step": "",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
