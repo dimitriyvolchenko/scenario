@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:50:52.497Z",
-  "device": "Компьютер",
+  "savedAt": "2026-09-16T17:52:32.698Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
-  "total": 529,
+  "total": 528,
   "marks": {},
   "plan": {
     "today": [],
@@ -39,12 +39,8 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
-    "spotLow": "",
-    "porder": [],
-    "pnames": {},
-    "tnames": {},
-    "torder": {}
+    "spot": "",
+    "spotLow": ""
   },
   "prefs": {
     "lang": "en",
