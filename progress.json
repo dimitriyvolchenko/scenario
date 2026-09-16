@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:50:35.256Z",
-  "device": "iPhone",
+  "savedAt": "2026-09-16T17:50:45.444Z",
+  "device": "iPad",
   "lead": "",
   "done": 0,
-  "total": 528,
+  "total": 529,
   "marks": {},
   "plan": {
     "today": [],
@@ -46,7 +46,7 @@
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Workspace arrangement!🐱",
+    "step": "Workspace arrangement!🥷🏻",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
