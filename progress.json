@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:52:32.698Z",
+  "savedAt": "2026-09-16T17:53:19.688Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -39,14 +39,14 @@
       }
     },
     "dim": "",
-    "spot": "",
+    "spot": "ph0",
     "spotLow": ""
   },
   "prefs": {
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Workspace arrangement!2",
+    "step": "Workspace arrangement!🥷🏻",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
