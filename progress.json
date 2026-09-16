@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:44:42.455Z",
+  "savedAt": "2026-09-16T17:45:28.639Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -42,7 +42,7 @@
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Prepare workspace",
+    "step": "Prepare workspace (workspace)",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
