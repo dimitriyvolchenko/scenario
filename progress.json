@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T17:49:52.377Z",
+  "savedAt": "2026-09-16T17:50:22.715Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -50,7 +50,7 @@
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Workspace arrangement!",
+    "step": "Workspace arrangement!2",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
