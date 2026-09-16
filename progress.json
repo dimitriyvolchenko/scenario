@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-16T12:17:11.828Z",
-  "device": "Компьютер",
+  "savedAt": "2026-09-16T17:44:42.455Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
-  "total": 529,
+  "total": 528,
   "marks": {},
   "plan": {
     "today": [],
@@ -29,24 +29,26 @@
     "log": {},
     "gone": {},
     "wait": {},
-    "pflag": {},
+    "pflag": {
+      "ph0": {
+        "more": false
+      }
+    },
     "dim": "",
-    "spot": "",
-    "spotLow": "",
-    "porder": [],
-    "pnames": {},
-    "tnames": {},
-    "torder": {}
+    "spot": "ph0",
+    "spotLow": ""
   },
   "prefs": {
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "",
+    "step": "Prepare workspace",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
     "mega": true,
-    "unfix": false
+    "unfix": false,
+    "focus": false,
+    "pageIcon": ""
   }
 }
