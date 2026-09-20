@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-18T07:29:58.874Z",
+  "savedAt": "2026-09-20T12:05:14.377Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -21,9 +21,13 @@
     "log": {},
     "gone": {},
     "wait": {},
-    "pflag": {},
+    "pflag": {
+      "ph0": {
+        "more": false
+      }
+    },
     "dim": "",
-    "spot": "",
+    "spot": "ph0",
     "spotLow": "",
     "porder": [],
     "pnames": {},
