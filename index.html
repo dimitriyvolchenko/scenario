@@ -2499,10 +2499,10 @@ function applySpot(){
  if(on){
   var el=elById(plan.spot); if(el)el.classList.add("spot");
   if(plan.spotLow){var lo=elById(plan.spotLow); if(lo)lo.classList.add("spot-low")}
-  var n=spotNote(), h=el?el.querySelector("h2"):null;
-  n.querySelector(".t").textContent=L("свет на: ","lit: ")+(h?h.textContent:plan.spot);
-  n.querySelector(".off").textContent=L("погасить","lights off");
- }
+  }
+  /* плашка «lights off» убрана с экрана: свет гасится той же кнопкой «свет» в подвале фазы,
+     нажатием на затемнённый фон или клавишей Escape */
+  var stale=document.querySelector(".spot-note"); if(stale)stale.remove();
  document.body.classList.toggle("dimmed",!!plan.dim);
  $$(".dim-keep").forEach(function(e){e.classList.remove("dim-keep")});
  if(plan.dim){var de=elById(plan.dim); if(de)de.classList.add("dim-keep")}
@@ -2515,6 +2515,11 @@ function setSpot(id){
  planSave(); applySpot();
  if(id){var el=elById(id); if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
 }
+document.addEventListener("click",function(e){
+  if(!plan.spot&&!plan.dim)return;
+  if(e.target.closest(".spot,.spot-low,.dim-keep,header.top,.drawer,.pop,.ov,.fab,.ph-foot"))return;
+  plan.spot="";plan.spotLow="";plan.dim="";planSave();applySpot();
+},true);
 document.addEventListener("keydown",function(e){
  if(e.key==="Escape"&&(plan.spot||plan.dim)){plan.spot="";plan.spotLow="";plan.dim="";planSave();applySpot()}});
 
