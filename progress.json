@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T16:53:55.693Z",
+  "savedAt": "2026-09-23T16:54:09.383Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -39,17 +39,24 @@
     "pflag": {
       "ph0": {
         "more": false,
-        "edit": false
+        "edit": true
       }
     },
     "dim": "",
     "spot": "",
     "spotLow": "",
-    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
-    "bm": [],
+    "porder": [],
+    "bm": [
+      {
+        "id": "ph0",
+        "t": "Workspace",
+        "no": "1",
+        "at": 1790180370675
+      }
+    ],
     "snames": {}
   },
   "prefs": {
