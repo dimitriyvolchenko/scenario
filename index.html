@@ -1180,9 +1180,54 @@ body.mega #coolMode{max-width:100% !important;margin:0 !important;padding-left:v
 
 /* ═══ ред. 17: двойное касание по строке — правка ═══ */
 .step,.step .txt,.tk-title,.ph-txt h2,.xlist .txt,.sublist .txt,.mysteps .txt,#prList .titem .tx{touch-action:manipulation}
-[contenteditable="true"]{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent) !important;outline-offset:3px;
+.txt[contenteditable="true"],.tk-title[contenteditable="true"],.ph-txt h2[contenteditable="true"],.tx[contenteditable="true"]{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent) !important;outline-offset:3px;
  border-radius:4px;background:color-mix(in srgb,var(--accent) 8%,transparent);cursor:text;-webkit-user-select:text;user-select:text}
 .step .txt.edited{border-bottom:1px dotted color-mix(in srgb,var(--muted) 60%,transparent)}
+
+/* ═══ ред. 18: заголовок и строка STEP пересобраны начисто ═══ */
+:root{--disp:"Futura-CondensedExtraBold","Futura Condensed ExtraBold","Haettenschweiler","Impact","Arial Narrow Bold","Arial Narrow","Arial Black",system-ui,sans-serif}
+html body .heroTitle{font-family:var(--disp) !important;font-weight:800 !important;
+ letter-spacing:.07em !important;word-spacing:.12em;line-height:.95 !important;
+ text-shadow:.05em .05em 0 var(--cyan) !important;transform:none !important;
+ padding:0 .06em .06em 0 !important;margin:0 !important;overflow:visible !important;
+ white-space:nowrap !important;min-width:0}
+html body .stepbox .big{font-family:var(--disp) !important;letter-spacing:.05em}
+/* STEP: подпись и поле не наезжают друг на друга */
+html body #stepBox{display:block;padding:12px 16px 12px !important}
+html body #stepBox .lbl{display:block !important;margin:0 0 6px !important;line-height:1.3;position:static !important}
+html body #stepBox #stepText{display:block;outline:none !important;background:transparent !important;
+ border:none !important;border-radius:0 !important;box-shadow:none !important;padding:0 !important;margin:0 !important;
+ min-height:1.15em;line-height:1.15 !important}
+html body #stepBox #stepText:focus{box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--accent) 55%,transparent) !important}
+
+/* десктоп и айпад: левая колонка */
+html body.mega #megaLeft .hero{display:grid !important;
+ grid-template-columns:clamp(64px,22cqi,112px) minmax(0,1fr) !important;grid-template-rows:auto auto auto !important;
+ column-gap:clamp(12px,4cqi,22px) !important;row-gap:8px !important;align-items:start !important}
+html body.mega #megaLeft .hero>.hero-art2{grid-column:1 !important;grid-row:1 / span 2 !important;width:100% !important;
+ align-self:center !important;margin:0 !important}
+html body.mega #megaLeft .hero>.hero-in{grid-column:2 !important;grid-row:1 !important;align-self:end !important;min-width:0}
+html body.mega #megaLeft .hero>.heroTitle{grid-column:2 !important;grid-row:2 !important;align-self:start !important;
+ font-size:clamp(26px,10cqi,54px) !important}
+html body.mega #megaLeft .hero>#stepBox{grid-column:1 / -1 !important;grid-row:3 !important;margin:10px 0 0 !important}
+
+/* айфон: заголовок вдвое крупнее, в две строки рядом с камерой */
+@media(max-width:860px){
+ html body.mega .hero.megastrip{grid-template-columns:clamp(62px,19vw,96px) minmax(0,1fr) !important;
+  column-gap:14px !important;row-gap:4px !important;padding:12px 18px 12px !important}
+ html body.mega .hero.megastrip>.hero-art2{grid-column:1 !important;grid-row:1 / span 2 !important;align-self:center !important}
+ html body.mega .hero.megastrip>.hero-in{grid-column:2 !important;grid-row:1 !important;align-self:end !important}
+ html body.mega .hero.megastrip .h-kicker{font-size:9px !important;letter-spacing:.16em !important;line-height:1.35}
+ html body.mega .hero.megastrip>.heroTitle{grid-column:2 !important;grid-row:2 !important;align-self:start !important;
+  white-space:normal !important;font-size:clamp(34px,11.6vw,52px) !important;line-height:.9 !important}
+ html body.mega .hero.megastrip>#stepBox{grid-column:1 / -1 !important;grid-row:3 !important;margin:8px 0 0 !important;
+  padding:7px 12px 8px !important}
+ html body.mega .hero.megastrip #stepBox .lbl{font-size:8.5px !important;margin:0 0 3px !important}
+ html body.mega .hero.megastrip #stepBox #stepText{font-size:clamp(16px,4.6vw,20px) !important}
+}
+/* без mega */
+html body:not(.mega) .hero>.heroTitle{font-size:clamp(34px,6vw,64px) !important}
+@media(max-width:560px){html body:not(.mega) .hero>.heroTitle{white-space:normal !important;font-size:clamp(34px,11vw,50px) !important}}
 </style>
 </head>
 <body><script>(function(){var c=document.documentElement.getAttribute("data-bodyclass");if(c)document.body.className=(document.body.className+" "+c).trim()})();</script>
@@ -4123,6 +4168,21 @@ function extraEditAll(){
 }
 (function(){var o=extraRender; extraRender=function(){o.apply(null,arguments);try{extraEditAll()}catch(e){}}})();
 applyStepNames(); stepEditAll(); extraEditAll();
+
+/* ═══ ред. 18: кегль заголовка — после загрузки шрифтов и смены языка ═══ */
+function fitTitle2(){
+ var t=document.querySelector('.heroTitle'); if(!t)return;
+ t.style.removeProperty('font-size');
+ var avail=t.clientWidth; if(!avail)return;
+ var size=parseFloat(getComputedStyle(t).fontSize)||40;
+ for(var i=0;i<5&&t.scrollWidth>avail+1;i++){
+  size=Math.max(16,size*((avail-2)/t.scrollWidth)); t.style.setProperty('font-size',size.toFixed(1)+'px','important')}
+}
+fitTitle=fitTitle2;
+(function(){var o=applyLang; applyLang=function(){o.apply(null,arguments);try{heroTitle()}catch(e){}}})();
+try{document.fonts&&document.fonts.ready.then(function(){try{fitTitle2();leftFits()}catch(e){}})}catch(e){}
+try{heroTitle()}catch(e){}
+setTimeout(function(){try{fitTitle2()}catch(e){}},600);
 </script>
 </body>
 </html>
