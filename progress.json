@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:54:57.066Z",
-  "device": "iPhone",
+  "savedAt": "2026-09-23T17:55:33.783Z",
+  "device": "Компьютер",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -116,10 +116,10 @@
     "dim": "",
     "spot": "ph0",
     "spotLow": "",
-    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
+    "porder": [],
     "bm": [
       {
         "id": "ph0",
