@@ -1148,6 +1148,35 @@ body.mega #coolMode{max-width:100% !important;margin:0 !important;padding-left:v
 .ph-del{width:34px;height:34px;border-radius:50%;border:var(--bdw) solid var(--bd);background:var(--card);color:var(--muted);cursor:pointer;font-size:15px;line-height:1;align-self:flex-start;margin-left:4px}
 .ph-del:hover{color:var(--accent);border-color:var(--accent)}
 
+
+/* ═══════════════ РЕДАКЦИЯ 14 ═══════════════ */
+
+/* ── 1. пилюля «погасить» убрана, свет гасится из меню и по Escape ── */
+.spot-note{display:none !important}
+
+/* ── 2. закладки ── */
+.b-mark.act{background:var(--gold) !important;border-color:var(--gold) !important;color:#221805 !important}
+.ph-bm{position:absolute;left:-2px;top:-10px;width:22px;height:30px;pointer-events:none;
+ filter:drop-shadow(0 3px 5px rgba(0,0,0,.28))}
+.phase{position:relative}
+.bmbox .tlist{max-height:none}
+.bmrow{display:flex;align-items:center;gap:9px;padding:9px 2px;border-bottom:1px dashed var(--line);
+ cursor:pointer}
+.bmrow:last-child{border-bottom:none}
+.bmrow:hover .nm{color:var(--accent)}
+.bmrow .mk{flex:0 0 auto;width:15px;height:20px}
+.bmrow .no{flex:0 0 auto;font:700 11px/1.5 "Courier New",monospace;color:var(--muted);
+ background:var(--soft);border-radius:999px;padding:1px 8px}
+.bmrow .nm{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bmrow .when{flex:0 0 auto;font:400 10.5px/1.6 "Courier New",monospace;color:var(--muted)}
+.bmrow .x{flex:0 0 auto;border:none;background:none;color:var(--muted);font-size:17px;
+ cursor:pointer;opacity:.45;line-height:1;padding:2px 5px}
+.bmrow .x:hover{opacity:1;color:var(--accent)}
+
+/* ═══ ред. 16: свои шаги не прячутся при выходе из режима e ═══ */
+.phase:not(.editon) .extrahost.hasitems{display:block !important}
+.phase:not(.editon):not(.myphase-real) .extrahost .addstep{display:none !important}
+.phase:not(.editon):not(.myphase-real) .extrahost .tk-body{padding-top:8px !important}
 </style>
 </head>
 <body><script>(function(){var c=document.documentElement.getAttribute("data-bodyclass");if(c)document.body.className=(document.body.className+" "+c).trim()})();</script>
@@ -1417,7 +1446,7 @@ body.mega #coolMode{max-width:100% !important;margin:0 !important;padding-left:v
   <button class="mi" data-go="#ph04">✂ <span data-en="Cutting">Нарезка</span></button>
   <button class="mi" data-go="#ph08">▶ <span data-en="Assembly">Сборка</span></button>
   <button class="mi" data-go=".iphone">▦ <span data-en="Icons"><span data-en="Icons">Иконки</span></span></button>
-  <button class="mi" data-go="body">↑ <span data-en="Top"><span data-en="Top">Наверх</span></span></button><button class="mi" id="miKey">🔑 <span data-en="Access token">Ключ доступа</span></button><button class="mi" id="miOrder">↕ <span data-en="Original phase order">Порядок фаз как был</span></button><button class="mi mi-danger" id="miRestore">↺ <span data-en="Restore the original file">Вернуть исходный вид</span></button>
+  <button class="mi" data-go="body">↑ <span data-en="Top"><span data-en="Top">Наверх</span></span></button><button class="mi" id="miLights">☼ <span data-en="Lights off">Погасить свет</span></button><button class="mi" id="miKey">🔑 <span data-en="Access token">Ключ доступа</span></button><button class="mi" id="miOrder">↕ <span data-en="Original phase order">Порядок фаз как был</span></button><button class="mi mi-danger" id="miRestore">↺ <span data-en="Restore the original file">Вернуть исходный вид</span></button>
  </div>
 </div>
 
@@ -2125,6 +2154,18 @@ function ghPush(quiet){
  .then(function(r){if(r.status===404)return null;
   if(!r.ok)return r.text().then(function(t){throw new Error(r.status+" "+t.slice(0,120))});return r.json()})
  .then(function(cur){
+  /* перед записью подбираем то, что успели отметить с других устройств,
+     иначе сохранение затёрло бы чужой прогресс */
+  var merged=false;
+  if(cur&&cur.content){
+   try{
+    var remoteText=b64dec(String(cur.content).replace(/\s+/g,""));
+    var before=Object.keys(state).length;
+    var res=applyRemote(remoteText,true);
+    if(res){ merged=(Object.keys(state).length!==before); text=payloadText(); }
+   }catch(e){}
+  }
+  window.__mergedOnPush=merged;
   var body={message:L("монтажная карта: ","editing map: ")+Object.keys(state).length+"/"+$$(".step input").length+" · "+(c.device||""),
             content:b64enc(text),branch:c.branch||"main"};
   if(cur&&cur.sha)body.sha=cur.sha;
@@ -2137,7 +2178,9 @@ function ghPush(quiet){
   c.remoteDone=Object.keys(state).length;if(c.lead)c.remoteLead=c.device;
   ghSave();paintSyncDot();syPaint();
   syState(L("Сохранено в ","Saved to ")+hhmm()+L(" · отмечено "," · ticked ")+c.remoteDone+L(" из "," of ")+$$(".step input").length);
-  if(!quiet)toast(L("Прогресс сохранён в GitHub","Progress saved to GitHub"));
+  if(!quiet)toast(window.__mergedOnPush
+   ?L("Объединено с копией в GitHub и сохранено","Merged with the GitHub copy and saved")
+   :L("Прогресс сохранён в GitHub","Progress saved to GitHub"));
   return true})
  .catch(function(e){syState(ghErr(e),true);if(!quiet)toast(L("Не сохранилось — откройте синхрон","Did not save — open sync"));return false})}
 function ghPull(quiet,merge){
@@ -3826,6 +3869,137 @@ function addPhaseDeleteButtons(){
 try{addPhaseDeleteButtons()}catch(e){}
 
 (function(){document.documentElement.classList.remove("booting")})();
+
+/* ═══════════════ РЕДАКЦИЯ 14 ═══════════════ */
+plan.bm = plan.bm || [];          /* закладки: [{id, t, at}] */
+
+/* ---------- 1. свет гасится из меню ---------- */
+function lightsOff(){
+ plan.spot=""; plan.spotLow=""; plan.dim=""; planSave();
+ try{applySpot()}catch(e){}
+ try{toast(L('Свет погашен','Lights off'))}catch(e){}
+}
+
+/* ---------- 2. закладки ---------- */
+function bmIcon(cls){
+ return '<svg class="'+cls+'" viewBox="0 0 16 22" fill="var(--gold)" stroke="rgba(0,0,0,.25)" stroke-width="1">'+
+        '<path d="M1.5 1.5h13v19l-6.5-5-6.5 5z"/></svg>';
+}
+function bmHas(pid){return plan.bm.some(function(b){return b.id===pid})}
+function bmToggle(pid){
+ var ph=document.querySelector('.phase[data-phase="'+pid+'"]');
+ var nm=ph?(ph.querySelector('h2')||{}).textContent||pid:pid;
+ var no=ph?((ph.querySelector('.ph-no')||{}).textContent||'') : '';
+ if(bmHas(pid)) plan.bm=plan.bm.filter(function(b){return b.id!==pid});
+ else plan.bm.push({id:pid,t:nm,no:no,at:Date.now()});
+ planSave(); bmPaint(); bmRender();
+}
+function bmPaint(){
+ document.querySelectorAll('.phase').forEach(function(ph){
+  var pid=ph.dataset.phase, on=bmHas(pid);
+  var b=ph.querySelector('.b-mark'); if(b)b.classList.toggle('act',on);
+  var f=ph.querySelector('.ph-bm');
+  if(on&&!f){ var d=document.createElement('div'); d.innerHTML=bmIcon('ph-bm');
+   ph.insertBefore(d.firstChild, ph.firstChild) }
+  if(!on&&f) f.remove();
+ });
+}
+function bmBox(){
+ var grid=document.querySelector('.cgrid'); if(!grid)return null;
+ var box=document.querySelector('#bmBox');
+ if(!box){
+  box=document.createElement('div'); box.className='cbox bmbox'; box.id='bmBox';
+  box.innerHTML='<h4><span data-en="Bookmarks">Закладки</span><span class="cnt" id="bmCnt"></span></h4>'+
+   '<div class="tlist" id="bmList"></div>';
+  grid.appendChild(box); try{langOne(box)}catch(e){}
+ }
+ return box;
+}
+function bmRender(){
+ var box=bmBox(); if(!box)return;
+ box.style.display = plan.bm.length ? '' : 'none';
+ var list=box.querySelector('#bmList'); list.innerHTML='';
+ plan.bm.slice().sort(function(a,b){return b.at-a.at}).forEach(function(b){
+  var ph=document.querySelector('.phase[data-phase="'+b.id+'"]');
+  var live=ph?((ph.querySelector('h2')||{}).textContent||b.t):b.t;
+  var no=ph?((ph.querySelector('.ph-no')||{}).textContent||b.no||''):(b.no||'');
+  var r=document.createElement('div'); r.className='bmrow';
+  r.innerHTML=bmIcon('mk')+'<span class="no"></span><span class="nm"></span>'+
+              '<span class="when"></span><button class="x">×</button>';
+  r.querySelector('.no').textContent=no;
+  r.querySelector('.nm').textContent=live;
+  r.querySelector('.when').textContent=hhmm(new Date(b.at));
+  r.addEventListener('click',function(e){
+   if(e.target.classList.contains('x'))return;
+   var t=document.querySelector('.phase[data-phase="'+b.id+'"]');
+   if(t){ t.scrollIntoView({block:'start'});
+     t.animate([{outline:'3px solid var(--gold)',outlineOffset:'12px'},
+                {outline:'3px solid transparent',outlineOffset:'12px'}],{duration:1400}) }
+  });
+  r.querySelector('.x').addEventListener('click',function(e){
+   e.stopPropagation(); plan.bm=plan.bm.filter(function(x){return x.id!==b.id});
+   planSave(); bmPaint(); bmRender();
+  });
+  list.appendChild(r);
+ });
+ var c=box.querySelector('#bmCnt'); if(c)c.textContent=plan.bm.length||'';
+}
+function bmButtons(){
+ document.querySelectorAll('.phase .ph-foot').forEach(function(f){
+  if(f.querySelector('.b-mark'))return;
+  var pid=(f.closest('.phase')||{dataset:{}}).dataset.phase; if(!pid)return;
+  var b=document.createElement('button'); b.className='b-mark'; b.dataset.pid=pid;
+  b.innerHTML='<svg viewBox="0 0 16 22" width="11" height="14" fill="currentColor" style="margin-right:2px">'+
+    '<path d="M1.5 1.5h13v19l-6.5-5-6.5 5z"/></svg><span data-en="bookmark">закладка</span>';
+  b.addEventListener('click',function(e){e.stopPropagation();bmToggle(pid)});
+  f.insertBefore(b, f.firstChild);
+  try{langOne(b)}catch(e){}
+ });
+ bmPaint();
+}
+
+function v14Boot(){
+ [bmButtons,bmRender].forEach(function(f){try{f()}catch(e){}});
+}
+
+$("#miLights").addEventListener("click",function(){openDrawer(false);lightsOff()});
+MIC.miLights='<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>';
+(function(){var o=extBoot; extBoot=function(){o.apply(null,arguments);try{v14Boot()}catch(e){}}})();
+(function(){var o=applyMore; applyMore=function(){o.apply(null,arguments);try{bmButtons()}catch(e){}}})();
+(function(){var o=applyPhaseOrder; applyPhaseOrder=function(){o.apply(null,arguments);try{bmRender()}catch(e){}}})();
+(function(){var o=bmRender; bmRender=function(){o.apply(null,arguments);
+  setTimeout(function(){try{leftFits()}catch(e){}},30)}})();
+v14Boot(); try{paintMenuIcons()}catch(e){} try{leftFits()}catch(e){}
+
+/* ═══ ред. 16: свои шаги остаются на карте и без режима e ═══ */
+function markExtraHosts(){
+ document.querySelectorAll('.extrahost').forEach(function(h){
+  var l=(plan.extra||{})[h.dataset.phase]||[]; h.classList.toggle('hasitems',l.length>0)});
+}
+/* при выключении e дописанное, но не отправленное Enter'ом, сохраняется;
+   пустое поле просто исчезает */
+function commitPending(ph){
+ var pid=ph.dataset.phase, changed=false;
+ ph.querySelectorAll('.extrahost .addstep input').forEach(function(inp){
+  var v=inp.value.trim(); if(!v)return;
+  (plan.extra[pid]=plan.extra[pid]||[]).push({id:uid(),t:v,on:false}); inp.value=""; changed=true});
+ ph.querySelectorAll('.task').forEach(function(t){
+  if(t.classList.contains('extrahost'))return;
+  var inp=t.querySelector('.subhost .addstep input'); if(!inp)return;
+  var v=inp.value.trim(); if(!v)return;
+  var tid=t.dataset.task||t.dataset.phase;
+  (plan.subs[tid]=plan.subs[tid]||[]).push({id:uid(),t:v,on:false}); inp.value=""; changed=true;
+  try{subRender(t)}catch(e){}});
+ if(!changed)return;
+ planSave(); try{extraRender()}catch(e){} try{update()}catch(e){} try{recalc()}catch(e){} try{planRender(true)}catch(e){}
+ try{toast(L("Свой шаг сохранён","Your step is saved"))}catch(e){}
+}
+document.addEventListener('click',function(e){
+ var b=e.target.closest('.ph-edit'); if(!b)return;
+ var ph=b.closest('.phase'); if(ph&&ph.classList.contains('editon'))try{commitPending(ph)}catch(er){}
+},true);
+(function(){var o=extraRender; extraRender=function(){o.apply(null,arguments);try{markExtraHosts()}catch(e){}}})();
+try{markExtraHosts()}catch(e){}
 </script>
 </body>
 </html>
