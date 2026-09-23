@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:54:05.228Z",
-  "device": "Компьютер",
+  "savedAt": "2026-09-23T17:54:45.314Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -116,10 +116,10 @@
     "dim": "",
     "spot": "ph0",
     "spotLow": "",
+    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
-    "porder": [],
     "bm": [
       {
         "id": "ph0",
@@ -140,7 +140,7 @@
     "lang": "en",
     "bd": "#e292fe",
     "bdw": 1,
-    "step": "",
+    "step": "workspace in progress",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
