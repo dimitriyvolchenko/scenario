@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:19:55.752Z",
+  "savedAt": "2026-09-23T17:20:11.510Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -116,19 +116,16 @@
     "dim": "",
     "spot": "",
     "spotLow": "",
+    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
-    "porder": [],
-    "bm": [
-      {
-        "id": "ph0",
-        "t": "Workspace",
-        "no": "1",
-        "at": 1790180370675
-      }
-    ],
-    "snames": {}
+    "bm": [],
+    "snames": {},
+    "dead": {},
+    "alive": {},
+    "revived": {},
+    "goneAt": {}
   },
   "prefs": {
     "lang": "en",
