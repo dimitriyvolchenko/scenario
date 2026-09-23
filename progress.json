@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T16:55:24.007Z",
+  "savedAt": "2026-09-23T16:55:36.438Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -31,6 +31,21 @@
     "view": "today",
     "subs": {},
     "trash": [
+      {
+        "id": "xnbmgu4n",
+        "kind": "xstep",
+        "t": "hello",
+        "at": 1790182529763,
+        "d": {
+          "pid": "ph0",
+          "idx": 1,
+          "item": {
+            "id": "xi3ojeyc",
+            "t": "hello",
+            "on": true
+          }
+        }
+      },
       {
         "id": "xgmmpt1d",
         "kind": "xstep",
@@ -85,7 +100,7 @@
     "pflag": {
       "ph0": {
         "more": false,
-        "edit": false
+        "edit": true
       }
     },
     "dim": "",
