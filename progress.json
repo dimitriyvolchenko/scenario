@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T13:33:55.412Z",
+  "savedAt": "2026-09-23T13:34:13.447Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -22,7 +22,7 @@
         {
           "id": "xi3ojeyc",
           "t": "hello",
-          "on": false
+          "on": true
         }
       ]
     },
@@ -38,8 +38,8 @@
     },
     "pflag": {
       "ph0": {
-        "more": true,
-        "edit": true
+        "more": false,
+        "edit": false
       }
     },
     "dim": "",
