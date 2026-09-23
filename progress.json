@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:13:18.189Z",
+  "savedAt": "2026-09-23T17:19:39.399Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
-  "total": 530,
+  "total": 529,
   "marks": {},
   "plan": {
     "today": [],
@@ -18,11 +18,6 @@
           "id": "xb740js9",
           "t": "reposition the Yandex folder on the spacious disk of disk D",
           "on": false
-        },
-        {
-          "id": "xi3ojeyc",
-          "t": "hello",
-          "on": true
         }
       ]
     },
@@ -31,6 +26,21 @@
     "view": "today",
     "subs": {},
     "trash": [
+      {
+        "id": "xoz8dc7c",
+        "kind": "xstep",
+        "t": "hello",
+        "at": 1790183967253,
+        "d": {
+          "pid": "ph0",
+          "idx": 1,
+          "item": {
+            "id": "xi3ojeyc",
+            "t": "hello",
+            "on": true
+          }
+        }
+      },
       {
         "id": "xnbmgu4n",
         "kind": "xstep",
@@ -118,7 +128,13 @@
         "at": 1790180370675
       }
     ],
-    "snames": {}
+    "snames": {},
+    "dead": {
+      "xi3ojeyc": 1790183967254
+    },
+    "alive": {},
+    "revived": {},
+    "goneAt": {}
   },
   "prefs": {
     "lang": "en",
