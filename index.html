@@ -1177,6 +1177,12 @@ body.mega #coolMode{max-width:100% !important;margin:0 !important;padding-left:v
 .phase:not(.editon) .extrahost.hasitems{display:block !important}
 .phase:not(.editon):not(.myphase-real) .extrahost .addstep{display:none !important}
 .phase:not(.editon):not(.myphase-real) .extrahost .tk-body{padding-top:8px !important}
+
+/* ═══ ред. 17: двойное касание по строке — правка ═══ */
+.step,.step .txt,.tk-title,.ph-txt h2,.xlist .txt,.sublist .txt,.mysteps .txt,#prList .titem .tx{touch-action:manipulation}
+[contenteditable="true"]{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent) !important;outline-offset:3px;
+ border-radius:4px;background:color-mix(in srgb,var(--accent) 8%,transparent);cursor:text;-webkit-user-select:text;user-select:text}
+.step .txt.edited{border-bottom:1px dotted color-mix(in srgb,var(--muted) 60%,transparent)}
 </style>
 </head>
 <body><script>(function(){var c=document.documentElement.getAttribute("data-bodyclass");if(c)document.body.className=(document.body.className+" "+c).trim()})();</script>
@@ -4000,6 +4006,123 @@ document.addEventListener('click',function(e){
 },true);
 (function(){var o=extraRender; extraRender=function(){o.apply(null,arguments);try{markExtraHosts()}catch(e){}}})();
 try{markExtraHosts()}catch(e){}
+
+/* ═══ ред. 17: двойное касание (и двойной клик) по любой строке — правка текста ═══ */
+plan.snames=plan.snames||{};
+function cleanHtml(h){
+ var d=document.createElement("div"); d.innerHTML=h;
+ (function walk(n){[].slice.call(n.childNodes).forEach(function(c){
+  if(c.nodeType===1){
+   var tg=c.tagName.toLowerCase();
+   if(["b","strong","i","em","kbd","code","br"].indexOf(tg)<0){
+    walk(c); while(c.firstChild)n.insertBefore(c.firstChild,c); n.removeChild(c); return}
+   [].slice.call(c.attributes).forEach(function(a){c.removeAttribute(a.name)}); walk(c)}
+  else if(c.nodeType!==3)n.removeChild(c)})})(d);
+ return d.innerHTML.replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
+}
+function stepTxtOf(inp){var l=inp.closest("label.step");return l?l.querySelector(".txt"):null}
+function applyStepNames(){
+ document.querySelectorAll('label.step input[data-k]').forEach(function(inp){
+  var k=inp.dataset.k, t=stepTxtOf(inp); if(!t)return;
+  if(plan.snames[k]){
+   ["data-en","data-enh","data-ru","data-ruh"].forEach(function(a){t.removeAttribute(a)});
+   if(t.innerHTML!==plan.snames[k])t.innerHTML=plan.snames[k];
+   t.classList.add("edited")}
+ });
+}
+function richEditable(t,k){
+ if(!t||t.dataset.re)return; t.dataset.re="1";
+ t.addEventListener("dblclick",function(ev){
+  if(t.isContentEditable)return;
+  ev.preventDefault();
+  var old=t.innerHTML;
+  t.contentEditable="true"; t.focus();
+  try{var r=document.createRange(); r.selectNodeContents(t);
+   var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r)}catch(e){}
+  function stop(ok){
+   t.contentEditable="false";
+   t.removeEventListener("blur",onBlur); t.removeEventListener("keydown",onKey);
+   if(!ok){t.innerHTML=old;return}
+   var v=cleanHtml(t.innerHTML);
+   if(!t.textContent.trim()||!v){t.innerHTML=old;return}
+   if(v===cleanHtml(old)){t.innerHTML=old;return}
+   plan.snames[k]=v; planSave();
+   ["data-en","data-enh","data-ru","data-ruh"].forEach(function(a){t.removeAttribute(a)});
+   t.innerHTML=v; t.classList.add("edited");
+   try{toast(L("Строка исправлена","Line updated"))}catch(e){}
+  }
+  function onBlur(){stop(true)}
+  function onKey(e){if(e.key==="Enter"){e.preventDefault();t.blur()} if(e.key==="Escape"){e.preventDefault();stop(false);t.blur()}}
+  t.addEventListener("blur",onBlur); t.addEventListener("keydown",onKey);
+ });
+}
+function stepEditAll(){
+ document.querySelectorAll('label.step input[data-k]').forEach(function(inp){
+  var t=stepTxtOf(inp); if(t)richEditable(t,inp.dataset.k)});
+}
+
+/* одно общее правило касаний для всего, что правится */
+var EDIT_SEL='label.step .txt,.tk-title,.ph-txt h2,.xlist .txt,.sublist .txt,.mysteps .txt,#prList .titem .tx';
+(function(){
+ var first=null;
+ function target(e){var n=e.target; if(n&&n.nodeType!==1)n=n.parentNode; return n&&n.closest?n.closest(EDIT_SEL):null}
+ document.addEventListener("touchstart",function(e){
+  if(e.touches&&e.touches.length>1){first=null;return}
+  var el=target(e); if(!el||el.isContentEditable)return;
+  var t=e.touches[0], now=Date.now();
+  if(first&&first.el===el&&now-first.at<450)return;   /* второе касание — состояние не перезаписываем */
+  var lab=el.closest("label"), cb=lab?lab.querySelector('input[type="checkbox"]'):null, det=el.closest("details");
+  first={el:el,at:0,x:t.clientX,y:t.clientY,cb:cb,was:cb?cb.checked:null,det:det,open:det?det.open:null,pending:true};
+ },{capture:true,passive:true});
+ document.addEventListener("touchend",function(e){
+  var el=target(e); if(!el||el.isContentEditable||!first||first.el!==el){ if(!el)first=null; return }
+  var t=(e.changedTouches&&e.changedTouches[0])||{}, now=Date.now();
+  if(Math.abs((t.clientX||0)-first.x)>30||Math.abs((t.clientY||0)-first.y)>30){first=null;return}
+  if(first.at&&now-first.at<450){
+   e.preventDefault(); e.stopImmediatePropagation();
+   var f=first; first=null;
+   /* первое касание успело поставить/снять галочку или раскрыть задачу — возвращаем как было */
+   if(f.cb&&f.cb.checked!==f.was){f.cb.checked=f.was; f.cb.dispatchEvent(new Event("change",{bubbles:true}))}
+   if(f.det&&f.det.open!==f.open)f.det.open=f.open;
+   var ev=document.createEvent("MouseEvents"); ev.initEvent("dblclick",true,true); el.dispatchEvent(ev);
+   return;
+  }
+  first.at=now;
+ },{capture:true,passive:false});
+})();
+/* пока строка правится, касания внутри неё не ставят галочку и не сворачивают задачу */
+document.addEventListener("click",function(e){
+ var n=e.target; if(n&&n.nodeType!==1)n=n.parentNode;
+ if(n&&n.closest&&n.closest('[contenteditable="true"]')){e.preventDefault()}
+},true);
+document.addEventListener("keyup",function(e){
+ var n=e.target; if(n&&n.isContentEditable&&(e.key===" "||e.key==="Enter")&&n.closest("summary"))e.preventDefault();
+},true);
+
+/* правки строк из GitHub не теряются */
+(function(){var o=applyRemote; applyRemote=function(text,merge){
+ var mine=JSON.parse(JSON.stringify(plan.snames||{})), keep={}, rem={};
+ ["pnames","tnames","torder","porder","bm"].forEach(function(k){if(plan[k]!==undefined)keep[k]=plan[k]});
+ try{var o2=JSON.parse(text); rem=(o2&&o2.plan&&o2.plan.snames)||{};
+  ["pnames","tnames","torder","porder","bm"].forEach(function(k){if(o2&&o2.plan&&o2.plan[k]!==undefined)keep[k]=merge?(plan[k]||o2.plan[k]):o2.plan[k]})}catch(e){}
+ var res=o.apply(this,arguments);
+ try{
+  Object.keys(keep).forEach(function(k){if(plan[k]===undefined)plan[k]=keep[k]});
+  plan.snames=merge?Object.assign({},rem,mine):Object.assign({},mine,rem);
+  planSave(); applyStepNames();
+ }catch(e){}
+ return res}})();
+(function(){var o=applyLang; applyLang=function(){o.apply(null,arguments);try{applyStepNames()}catch(e){}}})();
+/* свои шаги тоже правятся двойным касанием */
+function extraEditAll(){
+ document.querySelectorAll('.extrahost').forEach(function(h){
+  var pid=h.dataset.phase, list=(plan.extra||{})[pid]||[];
+  h.querySelectorAll('.xlist .txt').forEach(function(t,i){
+   if(t.dataset.xe)return; t.dataset.xe="1"; var it=list[i]; if(!it)return;
+   editable(t,function(v){it.t=v;planSave()})})});
+}
+(function(){var o=extraRender; extraRender=function(){o.apply(null,arguments);try{extraEditAll()}catch(e){}}})();
+applyStepNames(); stepEditAll(); extraEditAll();
 </script>
 </body>
 </html>
