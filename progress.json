@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T16:05:14.976Z",
+  "savedAt": "2026-09-23T16:05:29.321Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -22,7 +22,7 @@
         {
           "id": "xi3ojeyc",
           "t": "hello",
-          "on": false
+          "on": true
         }
       ]
     },
