@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T13:32:39.571Z",
+  "savedAt": "2026-09-23T13:32:55.939Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -43,18 +43,19 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
     "porder": [],
     "pnames": {},
     "tnames": {},
-    "torder": {}
+    "torder": {},
+    "bm": []
   },
   "prefs": {
     "lang": "en",
     "bd": "#e292fe",
     "bdw": 1,
-    "step": "Reposition Yandex disk (episode 1 : phase 00)",
+    "step": "",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
