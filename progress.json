@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:44:57.268Z",
+  "savedAt": "2026-09-23T17:50:02.276Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -105,7 +105,7 @@
     "log": {},
     "gone": {},
     "wait": {
-      "ph0": "workspace"
+      "ph0": "my own steps: one"
     },
     "pflag": {
       "ph0": {
@@ -114,7 +114,7 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
