@@ -1228,6 +1228,57 @@ html body.mega #megaLeft .hero>#stepBox{grid-column:1 / -1 !important;grid-row:3
 /* без mega */
 html body:not(.mega) .hero>.heroTitle{font-size:clamp(34px,6vw,64px) !important}
 @media(max-width:560px){html body:not(.mega) .hero>.heroTitle{white-space:normal !important;font-size:clamp(34px,11vw,50px) !important}}
+
+/* ═══ ред. 19 ═══ */
+/* заголовок: снова с наклоном; цвета разведены тенями — красная буква, кремовый зазор, голубой оттиск */
+:root{--disp2:"Haettenschweiler","Arial Narrow",Impact,"Arial Black",system-ui,sans-serif}
+html body .heroTitle{font-family:var(--disp2) !important;font-weight:900 !important;
+ transform:skewY(-2.2deg) rotate(-.4deg) !important;transform-origin:50% 50% !important;
+ letter-spacing:.045em !important;word-spacing:.1em;line-height:.98 !important;
+ text-shadow:.028em .028em 0 var(--paper),.062em .062em 0 var(--cyan),.1em .12em .06em rgba(0,0,0,.16) !important;
+ padding:.02em .12em .14em 0 !important;justify-self:start !important;width:fit-content !important;max-width:100% !important}
+html body .stepbox .big{font-family:var(--disp2) !important;letter-spacing:.03em}
+
+/* камера стоит на окне STEP */
+html body .hero>.hero-art2,html body.mega #megaLeft .hero>.hero-art2,html body.mega .hero.megastrip>.hero-art2{
+ position:relative !important;top:auto !important;left:auto !important;right:auto !important;bottom:auto !important;
+ z-index:6 !important;align-self:end !important;margin:0 0 -7px 0 !important;opacity:1 !important;
+ filter:drop-shadow(0 3px 2px rgba(0,0,0,.18)) !important}
+html body .hero>#stepBox{position:relative;z-index:4}
+html body.mega #megaLeft .hero{row-gap:0 !important}
+html body.mega #megaLeft .hero>.hero-in{padding-bottom:4px}
+html body.mega #megaLeft .hero>.heroTitle{margin:calc(.17em + 6px) 0 calc(.17em + 10px) !important}
+html body.mega #megaLeft .hero>#stepBox{margin:0 !important}
+@media(max-width:860px){
+ html body.mega .hero.megastrip{row-gap:0 !important}
+ html body.mega .hero.megastrip>.heroTitle{margin:calc(.17em + 4px) 0 calc(.17em + 8px) !important}
+ html body.mega .hero.megastrip>#stepBox{margin:0 !important}
+}
+html body:not(.mega) .hero>.heroTitle{margin:calc(.17em + 6px) 0 calc(.17em + 10px) !important}
+html body:not(.mega) .hero>#stepBox{margin-top:0 !important}
+
+/* наклон приподнимает правый край — даём ему место, чтобы не задевать надпись над заголовком */
+html body .hero>.heroTitle{margin-top:calc(.17em + 6px) !important}
+@media(max-width:860px){html body.mega .hero.megastrip>.heroTitle{margin-top:calc(.17em + 4px) !important}}
+/* задача в режиме e на узком экране: кнопки строкой, название под ними целиком */
+@media(max-width:560px){
+ html body .phase.editon details.task>summary{flex-wrap:wrap !important;row-gap:6px}
+ html body .phase.editon details.task>summary>.tk-title{order:20;flex:1 1 100% !important;min-width:0}
+}
+/* переходы к фазе не прячут её под липкой шапкой */
+html body .phase,html body details.task{scroll-margin-top:calc(var(--stickTop,70px) + 12px)}
+
+/* свои шаги: крестик виден всегда, справа в строке */
+html body .xlist li{display:flex !important;align-items:center !important;gap:6px}
+html body .xlist li>.step{flex:1 1 auto;min-width:0}
+html body .phase .xlist .del{display:inline-flex !important;flex:0 0 auto;align-items:center;justify-content:center;
+ width:34px;height:34px;border-radius:50%;border:var(--bdw) solid var(--line) !important;background:var(--card) !important;
+ color:var(--muted) !important;font-size:17px !important;line-height:1;padding:0 !important;opacity:.75;cursor:pointer}
+html body .phase .xlist .del:hover{opacity:1;color:var(--accent) !important;border-color:var(--accent) !important}
+
+/* закладка — справа, рядом с кнопками e и m, ничего не перекрывает */
+html body .ph-tools .ph-bm{position:static !important;width:20px;height:28px;flex:0 0 auto;align-self:center;margin:0 2px 0 0;
+ filter:drop-shadow(0 2px 3px rgba(0,0,0,.22))}
 </style>
 </head>
 <body><script>(function(){var c=document.documentElement.getAttribute("data-bodyclass");if(c)document.body.className=(document.body.className+" "+c).trim()})();</script>
@@ -1471,7 +1522,7 @@ html body:not(.mega) .hero>.heroTitle{font-size:clamp(34px,6vw,64px) !important}
 </div>
 
 
-<div class="drawer" id="drawer">
+<div class="drawer" id="drawer"><div id="buildTag" style="font:600 10.5px/1.4 'Courier New',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;padding:6px 14px 0;order:99">сборка 20</div>
  <div class="veil" id="drawerVeil"></div>
  <div class="pane">
   <button class="btn dclose" id="drawerClose">✕</button>
@@ -4183,6 +4234,83 @@ fitTitle=fitTitle2;
 try{document.fonts&&document.fonts.ready.then(function(){try{fitTitle2();leftFits()}catch(e){}})}catch(e){}
 try{heroTitle()}catch(e){}
 setTimeout(function(){try{fitTitle2()}catch(e){}},600);
+
+/* ═══ ред. 19: флажок закладки переезжает в правую группу кнопок ═══ */
+function bmPlace(){
+ document.querySelectorAll('.phase').forEach(function(ph){
+  var f=ph.querySelector('.ph-bm'); if(!f)return;
+  var tools=ph.querySelector('.ph-head .ph-tools');
+  if(tools){ if(f.parentNode!==tools) tools.insertBefore(f,tools.firstChild) }
+ });
+}
+(function(){var o=bmPaint; bmPaint=function(){o.apply(null,arguments);try{bmPlace()}catch(e){}}})();
+try{bmPlace()}catch(e){}
+try{fitTitle2()}catch(e){}
+function stickTop(){
+ var h=document.querySelector('header.top'), s=document.querySelector('.hero.megastrip');
+ var b=h?h.getBoundingClientRect().height:60;
+ if(s&&getComputedStyle(s).position==='sticky')b+=s.getBoundingClientRect().height;
+ document.documentElement.style.setProperty('--stickTop',Math.round(b)+'px');
+}
+window.addEventListener('resize',function(){setTimeout(stickTop,200)});
+setTimeout(stickTop,300); setTimeout(stickTop,1500);
+
+/* ═══ ред. 20: удалённое не воскресает при синхронизации ═══
+   Слияние с копией в GitHub добавляло всё, чего нет на устройстве, — в том числе
+   то, что здесь только что удалили. Теперь каждое удаление оставляет метку
+   plan.dead[id]=время, метки сливаются между устройствами, и помеченное
+   больше не возвращается. Для восстановленных задач — метка plan.revived. */
+plan.dead=plan.dead||{}; plan.alive=plan.alive||{}; plan.revived=plan.revived||{}; plan.goneAt=plan.goneAt||{};
+function idKey(it){return it&&(it.id?String(it.id):(it.t?"t:"+it.t:null))}
+function planIds(){
+ var s={};
+ function add(it){var k=idKey(it); if(k)s[k]=1}
+ ["today","tomorrow"].forEach(function(k){(plan[k]||[]).forEach(add)});
+ (plan.my||[]).forEach(function(ph){add(ph);(ph.items||[]).forEach(add)});
+ ["subs","extra"].forEach(function(k){var o=plan[k]||{};Object.keys(o).forEach(function(id){(o[id]||[]).forEach(add)})});
+ return s;
+}
+var _snap=planIds(), _gsnap=Object.assign({},plan.gone||{});
+var _inRemote=false;
+function trackDeletes(){
+ if(_inRemote)return;
+ var cur=planIds(), now=Date.now(), g=plan.gone||{};
+ Object.keys(_snap).forEach(function(k){if(!cur[k])plan.dead[k]=now});
+ Object.keys(cur).forEach(function(k){if(!_snap[k]&&plan.dead[k]){plan.alive[k]=now}});
+ Object.keys(_gsnap).forEach(function(k){if(!g[k])plan.revived[k]=now});
+ Object.keys(g).forEach(function(k){if(!_gsnap[k])plan.goneAt[k]=now});
+ _snap=cur; _gsnap=Object.assign({},g);
+}
+function maxMerge(a,b){var o={};[a||{},b||{}].forEach(function(m){Object.keys(m).forEach(function(k){o[k]=Math.max(o[k]||0,+m[k]||0)})});return o}
+function dropDead(){
+ var D=plan.dead;
+ function live(it){var k=idKey(it); return !(k&&D[k]&&D[k]>(plan.alive[k]||0))}
+ ["today","tomorrow"].forEach(function(k){if(plan[k])plan[k]=plan[k].filter(live)});
+ if(plan.my){plan.my=plan.my.filter(live); plan.my.forEach(function(ph){if(ph.items)ph.items=ph.items.filter(live)})}
+ ["subs","extra"].forEach(function(k){var o=plan[k]||{};Object.keys(o).forEach(function(id){if(Array.isArray(o[id]))o[id]=o[id].filter(live)})});
+ /* задача убрана, если её убрали позже, чем вернули */
+ plan.gone=plan.gone||{};
+ Object.keys(plan.revived).forEach(function(g){if(plan.gone[g]&&(plan.revived[g]||0)>(plan.goneAt[g]||0))delete plan.gone[g]});
+ Object.keys(plan.goneAt).forEach(function(g){if(!plan.gone[g]&&(plan.goneAt[g]||0)>(plan.revived[g]||0))plan.gone[g]=1});
+}
+(function(){var o=planSave; planSave=function(){try{trackDeletes()}catch(e){} return o.apply(this,arguments)}})();
+(function(){var o=applyRemote; applyRemote=function(text,merge){
+ var my={alive:Object.assign({},plan.alive),dead:Object.assign({},plan.dead),revived:Object.assign({},plan.revived),goneAt:Object.assign({},plan.goneAt)}, rem={};
+ _inRemote=true;
+ try{var r=JSON.parse(text); if(r&&r.plan)rem=r.plan}catch(e){}
+ var res; try{res=o.apply(this,arguments)}finally{_inRemote=false}
+ try{
+  plan.dead=maxMerge(my.dead,rem.dead); plan.alive=maxMerge(my.alive,rem.alive); plan.revived=maxMerge(my.revived,rem.revived); plan.goneAt=maxMerge(my.goneAt,rem.goneAt);
+  dropDead();
+  _snap=planIds(); _gsnap=Object.assign({},plan.gone);
+  try{localStorage.setItem(PKEY,JSON.stringify(plan))}catch(e){}
+  try{prRender();myRender();extraRender();subRenderAll();planRender(true)}catch(e){}
+  Object.keys(plan.revived).forEach(function(g){if(!plan.gone[g]){try{ungone(g)}catch(e){}}});
+  Object.keys(plan.gone).forEach(function(g){var el=document.querySelector('.task[data-task="'+g+'"],.phase[data-phase="'+g+'"]'); if(el){try{makeGone(el,g)}catch(e){}}});
+  try{update();recalc()}catch(e){}
+ }catch(e){}
+ return res}})();
+/* чистим то, что уже успело воскреснуть до этой редакции, не трогаем */
 </script>
 </body>
 </html>
