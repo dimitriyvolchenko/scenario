@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:19:39.399Z",
-  "device": "Компьютер",
+  "savedAt": "2026-09-23T17:19:55.752Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -128,13 +128,7 @@
         "at": 1790180370675
       }
     ],
-    "snames": {},
-    "dead": {
-      "xi3ojeyc": 1790183967254
-    },
-    "alive": {},
-    "revived": {},
-    "goneAt": {}
+    "snames": {}
   },
   "prefs": {
     "lang": "en",
