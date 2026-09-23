@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T16:05:02.520Z",
+  "savedAt": "2026-09-23T16:05:14.976Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -43,12 +43,12 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
+    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
-    "porder": [],
     "bm": [],
     "snames": {}
   },
