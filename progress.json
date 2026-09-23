@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T17:21:06.115Z",
-  "device": "iPhone",
+  "savedAt": "2026-09-23T17:21:18.299Z",
+  "device": "Компьютер",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -116,10 +116,10 @@
     "dim": "",
     "spot": "ph0",
     "spotLow": "",
-    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
+    "porder": [],
     "bm": [
       {
         "id": "ph0",
@@ -129,7 +129,9 @@
       }
     ],
     "snames": {},
-    "dead": {},
+    "dead": {
+      "xi3ojeyc": 1790183967254
+    },
     "alive": {},
     "revived": {},
     "goneAt": {}
