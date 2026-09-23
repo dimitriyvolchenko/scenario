@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T16:54:09.383Z",
+  "savedAt": "2026-09-23T16:54:18.446Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -30,7 +30,23 @@
     "due": "",
     "view": "today",
     "subs": {},
-    "trash": [],
+    "trash": [
+      {
+        "id": "xhlt0x6t",
+        "kind": "xstep",
+        "t": "hello",
+        "at": 1790182451595,
+        "d": {
+          "pid": "ph0",
+          "idx": 1,
+          "item": {
+            "id": "xi3ojeyc",
+            "t": "hello",
+            "on": true
+          }
+        }
+      }
+    ],
     "log": {},
     "gone": {},
     "wait": {
