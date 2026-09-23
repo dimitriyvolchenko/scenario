@@ -1279,6 +1279,28 @@ html body .phase .xlist .del:hover{opacity:1;color:var(--accent) !important;bord
 /* закладка — справа, рядом с кнопками e и m, ничего не перекрывает */
 html body .ph-tools .ph-bm{position:static !important;width:20px;height:28px;flex:0 0 auto;align-self:center;margin:0 2px 0 0;
  filter:drop-shadow(0 2px 3px rgba(0,0,0,.22))}
+
+/* ═══ сборка 21 ═══ */
+/* камера стоит над окном STEP, ничего не перекрывая */
+html body .hero>.hero-art2,html body.mega #megaLeft .hero>.hero-art2,html body.mega .hero.megastrip>.hero-art2{
+ margin:0 0 10px 0 !important;z-index:1 !important}
+/* крестики у своих шагов — только в режиме e (в своих этапах, где кнопки e нет, — всегда) */
+html body .phase:not(.editon):not(.myphase-real) .xlist .del{display:none !important}
+/* кнопка edit — только в режиме e */
+.ed-btn{display:none;flex:0 0 auto;align-items:center;justify-content:center;height:26px;padding:0 9px;margin:0 2px 0 4px;
+ border-radius:999px;border:var(--bdw) solid var(--line);background:var(--card);color:var(--muted);
+ font:700 11px/1 "Courier New",monospace;letter-spacing:.06em;text-transform:lowercase;cursor:pointer;white-space:nowrap}
+.ed-btn:hover,.ed-btn.on{border-color:var(--accent);color:var(--accent)}
+html body .phase.editon .ed-btn,html body .myphase-real .ed-btn{display:inline-flex !important}
+html body .phase.editon ol.steps>li.has-ed{display:flex;align-items:center;gap:6px}
+html body .phase.editon ol.steps>li.has-ed>label.step{flex:1 1 auto;min-width:0}
+.ph-ord .ed-btn{margin-left:10px}
+/* закладка — лента, свисающая с верхней линии фазы, как в iBooks */
+html body .phase>.ph-bm{position:absolute !important;top:-19px;left:auto;width:22px !important;height:46px !important;z-index:3;
+ pointer-events:none;margin:0 !important;fill:var(--accent) !important;stroke:none !important;filter:drop-shadow(0 3px 3px rgba(0,0,0,.2))}
+@media(max-width:700px){html body .phase>.ph-bm{top:-13px;height:40px !important}}
+html body .phase.has-bm .ph-txt{padding-right:52px}
+html body .phase.has-bm .ph-ord{max-width:calc(100% - 96px)}
 </style>
 </head>
 <body><script>(function(){var c=document.documentElement.getAttribute("data-bodyclass");if(c)document.body.className=(document.body.className+" "+c).trim()})();</script>
@@ -1522,7 +1544,7 @@ html body .ph-tools .ph-bm{position:static !important;width:20px;height:28px;fle
 </div>
 
 
-<div class="drawer" id="drawer"><div id="buildTag" style="font:600 10.5px/1.4 'Courier New',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;padding:6px 14px 0;order:99">сборка 20</div>
+<div class="drawer" id="drawer"><div id="buildTag" style="font:600 10.5px/1.4 'Courier New',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;padding:6px 14px 0;order:99">сборка 21</div>
  <div class="veil" id="drawerVeil"></div>
  <div class="pane">
   <button class="btn dclose" id="drawerClose">✕</button>
@@ -4311,6 +4333,71 @@ function dropDead(){
  }catch(e){}
  return res}})();
 /* чистим то, что уже успело воскреснуть до этой редакции, не трогаем */
+
+/* ═══ сборка 21: правка только через кнопку edit в режиме e ═══ */
+EDIT_SEL='.__никогда__';                       /* двойное касание больше ничего не открывает */
+var __allowEdit=false;
+var EDITABLE='.tk-title,.ph-txt h2,label.step .txt,.xlist .txt,.sublist .txt,.mysteps .txt';
+document.addEventListener('dblclick',function(e){
+ var n=e.target; if(n&&n.nodeType!==1)n=n.parentNode;
+ if(!__allowEdit&&n&&n.closest&&n.closest(EDITABLE)){e.stopImmediatePropagation();e.preventDefault()}
+},true);
+function startEdit(el){
+ if(!el)return; __allowEdit=true;
+ try{var ev=document.createEvent('MouseEvents');ev.initEvent('dblclick',true,true);el.dispatchEvent(ev)}finally{__allowEdit=false}
+ if(!el.isContentEditable){ el.contentEditable='true'; el.focus() }
+ try{el.scrollIntoView({block:'nearest'})}catch(e){}
+}
+function edBtn(target){
+ var b=document.createElement('button'); b.type='button'; b.className='ed-btn'; b.textContent='edit';
+ b.title=L('исправить текст','edit the text');
+ b.addEventListener('pointerdown',function(e){e.preventDefault()});   /* не отбираем фокус раньше времени */
+ b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();
+  var t=typeof target==='function'?target():target; startEdit(t)});
+ return b;
+}
+function addEditButtons(){
+ /* задачи: рядом с крестиком */
+ document.querySelectorAll('details.task>summary').forEach(function(s){
+  if(s.querySelector(':scope>.ed-btn'))return; var x=s.querySelector(':scope>.tk-del'); if(!x)return;
+  s.insertBefore(edBtn(s.querySelector('.tk-title')),x)});
+ /* строки шагов карты */
+ document.querySelectorAll('ol.steps>li').forEach(function(li){
+  var lab=li.querySelector(':scope>label.step'); if(!lab||li.querySelector(':scope>.ed-btn'))return;
+  var del=li.querySelector(':scope>.del'); li.classList.add('has-ed');
+  li.insertBefore(edBtn(lab.querySelector('.txt')),del||null)});
+ /* название фазы — в строке со стрелками */
+ document.querySelectorAll('.phase .ph-ord').forEach(function(o){
+  if(o.querySelector('.ed-btn'))return; var ph=o.closest('.phase');
+  o.appendChild(edBtn(function(){return ph.querySelector('.ph-txt h2')}))});
+}
+function stepEditMissing(){ try{stepEditAll()}catch(e){} }
+['extraRender','myRender','subRender','applyEdit','decoratePhases','planRender','applyLang'].forEach(function(n){
+ if(typeof window[n]!=='function')return; var o=window[n];
+ window[n]=function(){var r=o.apply(this,arguments); try{addEditButtons();bmPlace()}catch(e){} return r};
+});
+
+/* ═══ закладка-лента: висит с верхней линии фазы, левее кружка с процентами ═══ */
+bmPlace=function(){
+ document.querySelectorAll('.phase').forEach(function(ph){
+  var f=ph.querySelector('.ph-bm'); ph.classList.toggle('has-bm',!!f); if(!f)return;
+  if(f.parentNode!==ph) ph.insertBefore(f,ph.firstChild);
+  var pr=ph.getBoundingClientRect(); if(!pr.width)return;
+  var fr=f.getBoundingClientRect(), top=fr.top, bot=fr.bottom, w=fr.width||22;
+  var obs=[].slice.call(ph.querySelectorAll('.ph-head .ph-ic,.ph-head .ph-num,.ph-head h2,.ph-head .ph-txt>p,.ph-head .ph-prog,.ph-head .ph-tools>*,.ph-head .ph-ord>*'))
+   .map(function(e){return e.getBoundingClientRect()}).filter(function(r){return r.width&&r.bottom>top-4&&r.top<bot+4});
+  function free(x){var L=pr.left+x-6,R=pr.left+x+w+6; return !obs.some(function(r){return r.right>L&&r.left<R})}
+  /* хотим левее кружка с процентами, если он в первой строке, иначе у правого края */
+  var ring=ph.querySelector('.ph-head .ph-prog'), rr=ring&&ring.getBoundingClientRect();
+  var want=(rr&&rr.width&&rr.top<bot)?(rr.left-pr.left-w-14):(pr.width-w-14);
+  var x=Math.round(want);
+  while(x>8&&!free(x))x-=4;
+  if(x<=8){x=Math.round(pr.width-w-6); while(x>8&&!free(x))x-=4}
+  f.style.left=x+'px';
+ });
+};
+window.addEventListener('resize',function(){setTimeout(function(){try{bmPlace()}catch(e){}},150)});
+addEditButtons(); bmPlace(); setTimeout(function(){try{bmPlace()}catch(e){}},800);
 </script>
 </body>
 </html>
