@@ -1,18 +1,26 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-23T06:29:53.015Z",
+  "savedAt": "2026-09-23T06:31:10.035Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
-  "total": 528,
+  "total": 529,
   "marks": {},
   "plan": {
     "today": [],
     "tomorrow": [],
     "days": {},
     "my": [],
-    "extra": {},
+    "extra": {
+      "ph0": [
+        {
+          "id": "xb740js9",
+          "t": "reposition the Yandex folder on the spacious disk of disk D",
+          "on": false
+        }
+      ]
+    },
     "start": "",
     "due": "",
     "view": "today",
@@ -30,14 +38,14 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": ""
   },
   "prefs": {
     "lang": "en",
     "bd": "#e292fe",
     "bdw": 1,
-    "step": "Workspace",
+    "step": "Reposition Yandex disk (episode 1 : phase 00)",
     "cool": false,
     "hideIcons": false,
     "hideDone": false,
