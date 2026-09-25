@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-25T10:31:12.395Z",
+  "savedAt": "2026-09-25T10:31:29.849Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -113,7 +113,7 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
@@ -139,7 +139,7 @@
     "lang": "en",
     "bd": "#e292fe",
     "bdw": 1,
-    "step": "",
+    "step": "workspace",
     "cool": false,
     "mega": true,
     "unfix": false,
