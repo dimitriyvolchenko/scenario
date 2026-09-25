@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-25T10:45:23.176Z",
+  "savedAt": "2026-09-25T10:46:19.765Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -108,25 +108,16 @@
       "ph0": "my own steps: one"
     },
     "pflag": {
-      "ph0": {
-        "more": false
-      }
+      "ph0": {}
     },
     "dim": "",
     "spot": "",
     "spotLow": "",
+    "porder": [],
     "pnames": {},
     "tnames": {},
     "torder": {},
-    "porder": [],
-    "bm": [
-      {
-        "id": "ph0",
-        "t": "Workspace",
-        "no": "1",
-        "at": 1790280096315
-      }
-    ],
+    "bm": [],
     "snames": {},
     "dead": {
       "xi3ojeyc": 1790183967254
@@ -137,9 +128,9 @@
   },
   "prefs": {
     "lang": "en",
-    "bd": "#e292fe",
-    "bdw": 1,
-    "step": "workspace",
+    "bd": "#B9B2A6",
+    "bdw": 1.5,
+    "step": "",
     "cool": false,
     "mega": true,
     "unfix": false,
