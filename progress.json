@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-25T10:32:28.344Z",
-  "device": "Компьютер",
+  "savedAt": "2026-09-25T10:44:32.231Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -113,7 +113,7 @@
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
