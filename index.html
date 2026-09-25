@@ -1301,6 +1301,21 @@ html body .phase>.ph-bm{position:absolute !important;top:-19px;left:auto;width:2
 @media(max-width:700px){html body .phase>.ph-bm{top:-13px;height:40px !important}}
 html body .phase.has-bm .ph-txt{padding-right:52px}
 html body .phase.has-bm .ph-ord{max-width:calc(100% - 96px)}
+
+/* ═══ сборка 22: свои этапы работают как обычные фазы — правка и удаление через e ═══ */
+html body .myphase-real .ph-head>button.btn{display:none !important}
+html body .ph-ord .ed-btn{width:auto !important;min-width:0 !important;height:26px !important;padding:0 10px !important;border-radius:999px !important;
+ font:700 11px/1 "Courier New",monospace !important;margin-left:10px !important}
+html body .ph-del{align-items:center;justify-content:center;line-height:1 !important;padding:0 !important}
+html body .myphase-real .ph-edit{display:inline-flex !important}
+html body .myphase-real:not(.editon) .mysteps .del,html body .myphase-real:not(.editon) .ed-btn,
+html body .myphase-real:not(.editon) .ph-del{display:none !important}
+html body .myphase-real.editon .ph-del{display:inline-flex !important}
+html body .mysteps>li{display:flex !important;align-items:center !important;gap:6px}
+html body .mysteps>li>label.step{flex:1 1 auto;min-width:0}
+html body .myphase-real.editon .mysteps .del{display:inline-flex !important;flex:0 0 auto;align-items:center;justify-content:center;
+ width:34px;height:34px;border-radius:50%;border:var(--bdw) solid var(--line) !important;background:var(--card) !important;
+ color:var(--muted) !important;font-size:17px !important;line-height:1;padding:0 !important;opacity:.75;cursor:pointer}
 </style>
 </head>
 <body><script>(function(){var c=document.documentElement.getAttribute("data-bodyclass");if(c)document.body.className=(document.body.className+" "+c).trim()})();</script>
@@ -1544,7 +1559,7 @@ html body .phase.has-bm .ph-ord{max-width:calc(100% - 96px)}
 </div>
 
 
-<div class="drawer" id="drawer"><div id="buildTag" style="font:600 10.5px/1.4 'Courier New',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;padding:6px 14px 0;order:99">сборка 21</div>
+<div class="drawer" id="drawer"><div id="buildTag" style="font:600 10.5px/1.4 'Courier New',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;padding:6px 14px 0;order:99">сборка 23</div>
  <div class="veil" id="drawerVeil"></div>
  <div class="pane">
   <button class="btn dclose" id="drawerClose">✕</button>
@@ -1638,7 +1653,7 @@ function jumpNext(){
  i.closest(".step").animate([{background:"var(--accent-soft)"},{background:"transparent"}],{duration:1200});
 }
 // первая незакрытая задача открыта
-(function(){const i=$$(".step input").find(x=>!x.checked); if(i)i.closest(".task").open=true})();
+(function(){try{var o=(JSON.parse(localStorage.getItem(KEY+":prefs")||"null")||{}).open||{}; $$(".task").forEach(function(t){var id=t.dataset.task; if(id&&o[id])t.open=true})}catch(e){}})();
 update();
 
 
@@ -1770,7 +1785,8 @@ $("#dDue").addEventListener("click",function(){plan.due=askDate(plan.due);planSa
 
 /* ---------- настройки внешнего вида: отдельный ключ, поля сливаются ---------- */
 var UKEY=KEY+":prefs";
-function freshPrefs(){return {lang:"ru", bd:"#B9B2A6", bdw:1.5, step:"", cool:false}}
+function freshPrefs(){return {lang:"ru", bd:"#B9B2A6", bdw:1.5, step:"", cool:false,
+ mega:true, unfix:false, focus:false, hideIcons:false, hideDone:false, pageIcon:"", open:{}}}
 var prefs=freshPrefs();
 (function(){try{var sv=JSON.parse(localStorage.getItem(UKEY)||"null");
  if(sv)Object.keys(prefs).forEach(function(k){if(sv[k]!==undefined)prefs[k]=sv[k]})}catch(e){}})();
@@ -2254,7 +2270,7 @@ function applyRemote(text,merge){
   }
   planSave(); try{prRender();myRender();extraRender();planRender(true);extBoot()}catch(e){}
  }
- if(o.prefs){Object.keys(prefs).forEach(function(k){if(o.prefs[k]!==undefined&&(!merge||k!=="step"))prefs[k]=o.prefs[k]});
+ if(o.prefs){["step"].forEach(function(k){if(o.prefs[k]!==undefined&&!merge)prefs[k]=o.prefs[k]});
   prefsSave();try{applyBorder();applyStep();applyLang()}catch(e){}}
  var c=ghConf();c.stamp=o.savedAt||"";c.at=Date.now();if(!merge)c.dirty=false;ghSave();
  try{recalc()}catch(e){}
@@ -3973,7 +3989,8 @@ document.addEventListener("click",function(e){
  var b=e.target.closest(".tk-del,.del,.ph-del"); if(!b)return;
  if(b.dataset.ok==="1"){delete b.dataset.ok;return}
  var what=b.classList.contains("ph-del")?L("этап","the stage"):(b.classList.contains("tk-del")?L("задачу","the task"):L("шаг","the step"));
- if(!confirm(L("Удалить "+what+"? Отменить будет нельзя.","Delete "+what+"? This cannot be undone."))){e.stopImmediatePropagation();e.preventDefault();return}
+ var toBin=!b.classList.contains("ph-del");
+ if(!confirm(toBin?L("Убрать "+what+" в корзину? Вернуть можно из меню → Корзина.","Move "+what+" to the trash? You can bring it back from Menu → Trash."):L("Удалить "+what+"? Отменить будет нельзя.","Delete "+what+"? This cannot be undone."))){e.stopImmediatePropagation();e.preventDefault();return}
  b.dataset.ok="1";
 },true);
 /* кнопка удаления у своих этапов */
@@ -4398,6 +4415,33 @@ bmPlace=function(){
 };
 window.addEventListener('resize',function(){setTimeout(function(){try{bmPlace()}catch(e){}},150)});
 addEditButtons(); bmPlace(); setTimeout(function(){try{bmPlace()}catch(e){}},800);
+
+/* счётчик в шапке сразу учитывает галочки своих шагов и подзадач */
+document.addEventListener('change',function(e){
+ if(e.target&&e.target.closest&&e.target.closest('.mysteps,.xlist,.sublist'))setTimeout(function(){try{update()}catch(er){}},0);
+});
+/* ═══ сборка 22: раскрытые задачи и состояние вида — свои у каждого устройства ═══ */
+prefs.open=prefs.open||{};
+document.addEventListener('toggle',function(e){
+ var t=e.target; if(!t||!t.classList||!t.classList.contains('task')||!t.dataset.task)return;
+ if(t.open)prefs.open[t.dataset.task]=1; else delete prefs.open[t.dataset.task];
+ try{localStorage.setItem(UKEY,JSON.stringify(prefs))}catch(er){}   /* без синхронизации */
+},true);
+(function(){var o=applyRemote; applyRemote=function(text,merge){
+ var ui={spot:plan.spot,spotLow:plan.spotLow,dim:plan.dim,view:plan.view,pf:{}};
+ Object.keys(plan.pflag||{}).forEach(function(k){var f=plan.pflag[k]||{};ui.pf[k]={edit:f.edit,more:f.more}});
+ var res=o.apply(this,arguments);
+ try{
+  plan.spot=ui.spot;plan.spotLow=ui.spotLow;plan.dim=ui.dim;plan.view=ui.view;
+  plan.pflag=plan.pflag||{};
+  Object.keys(plan.pflag).forEach(function(k){var f=plan.pflag[k]; if(!ui.pf[k]){delete f.edit;delete f.more}});
+  Object.keys(ui.pf).forEach(function(k){var f=(plan.pflag[k]=plan.pflag[k]||{}); f.edit=ui.pf[k].edit; f.more=ui.pf[k].more;
+   if(f.edit===undefined)delete f.edit; if(f.more===undefined)delete f.more});
+  try{localStorage.setItem(PKEY,JSON.stringify(plan))}catch(e){}
+  try{applyEdit()}catch(e){} try{applyMore()}catch(e){} try{applySpot()}catch(e){} try{prRender()}catch(e){}
+  $$(".task").forEach(function(t){var id=t.dataset.task; t.open=!!(id&&prefs.open[id])});
+ }catch(e){}
+ return res}})();
 </script>
 </body>
 </html>
