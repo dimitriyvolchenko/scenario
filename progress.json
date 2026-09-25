@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-25T10:44:32.231Z",
+  "savedAt": "2026-09-25T10:44:43.870Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -143,7 +143,7 @@
     "cool": false,
     "mega": true,
     "unfix": false,
-    "focus": false,
+    "focus": true,
     "hideIcons": false,
     "hideDone": false,
     "pageIcon": "",
