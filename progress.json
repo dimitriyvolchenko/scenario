@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-26T16:50:07.054Z",
+  "savedAt": "2026-09-26T16:50:25.876Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -108,16 +108,25 @@
       "ph0": "my own steps: one"
     },
     "pflag": {
-      "ph0": {}
+      "ph0": {
+        "more": true
+      }
     },
     "dim": "",
-    "spot": "",
+    "spot": "ph0",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
     "torder": {},
     "porder": [],
-    "bm": [],
+    "bm": [
+      {
+        "id": "ph0",
+        "t": "Workspace",
+        "no": "1",
+        "at": 1790441411320
+      }
+    ],
     "snames": {},
     "dead": {
       "xi3ojeyc": 1790183967254
@@ -134,10 +143,12 @@
     "cool": false,
     "mega": true,
     "unfix": false,
-    "focus": true,
+    "focus": false,
     "hideIcons": false,
     "hideDone": false,
     "pageIcon": "",
-    "open": {}
+    "open": {
+      "t3": 1
+    }
   }
 }
