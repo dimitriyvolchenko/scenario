@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-29T18:42:01.895Z",
+  "savedAt": "2026-09-29T20:35:17.121Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -124,12 +124,12 @@
     },
     "pflag": {
       "ph0": {
-        "more": false,
+        "more": true,
         "edit": false
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
@@ -164,6 +164,10 @@
     "hideIcons": false,
     "hideDone": false,
     "pageIcon": "",
-    "open": {}
+    "open": {
+      "t1": 1,
+      "t2": 1,
+      "t4": 1
+    }
   }
 }
