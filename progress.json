@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-29T18:40:31.672Z",
+  "savedAt": "2026-09-29T18:40:52.029Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
-  "total": 529,
+  "total": 528,
   "marks": {},
   "plan": {
     "today": [],
@@ -13,19 +13,28 @@
     "days": {},
     "my": [],
     "extra": {
-      "ph0": [
-        {
-          "id": "xb740js9",
-          "t": "reposition the Yandex folder on the spacious disk of disk D",
-          "on": false
-        }
-      ]
+      "ph0": []
     },
     "start": "",
     "due": "",
     "view": "today",
     "subs": {},
     "trash": [
+      {
+        "id": "xku60aog",
+        "kind": "xstep",
+        "t": "reposition the Yandex folder on the spacious disk of disk D",
+        "at": 1790707242643,
+        "d": {
+          "pid": "ph0",
+          "idx": 0,
+          "item": {
+            "id": "xb740js9",
+            "t": "reposition the Yandex folder on the spacious disk of disk D",
+            "on": true
+          }
+        }
+      },
       {
         "id": "xoz8dc7c",
         "kind": "xstep",
@@ -109,7 +118,8 @@
     },
     "pflag": {
       "ph0": {
-        "more": true
+        "more": true,
+        "edit": false
       }
     },
     "dim": "",
@@ -129,7 +139,8 @@
     ],
     "snames": {},
     "dead": {
-      "xi3ojeyc": 1790183967254
+      "xi3ojeyc": 1790183967254,
+      "xb740js9": 1790707242645
     },
     "alive": {},
     "revived": {},
