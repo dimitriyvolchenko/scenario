@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-09-28T12:16:02.676Z",
-  "device": "Компьютер",
+  "savedAt": "2026-09-29T18:40:31.672Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -109,7 +109,7 @@
     },
     "pflag": {
       "ph0": {
-        "more": false
+        "more": true
       }
     },
     "dim": "",
@@ -137,8 +137,8 @@
   },
   "prefs": {
     "lang": "en",
-    "bd": "#e292fe",
-    "bdw": 1,
+    "bd": "#B9B2A6",
+    "bdw": 1.5,
     "step": "",
     "cool": false,
     "mega": true,
