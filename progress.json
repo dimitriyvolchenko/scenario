@@ -1,8 +1,8 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-01T10:59:55.916Z",
-  "device": "Компьютер",
+  "savedAt": "2026-10-02T04:51:47.284Z",
+  "device": "iPhone",
   "lead": "",
   "done": 0,
   "total": 529,
@@ -124,7 +124,8 @@
     },
     "pflag": {
       "ph0": {
-        "more": false
+        "more": false,
+        "edit": false
       }
     },
     "dim": "",
@@ -153,8 +154,8 @@
   },
   "prefs": {
     "lang": "en",
-    "bd": "#e292fe",
-    "bdw": 1,
+    "bd": "#B9B2A6",
+    "bdw": 1.5,
     "step": "making greengrass videos for processing with em",
     "cool": false,
     "mega": true,
