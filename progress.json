@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T16:09:02.109Z",
+  "savedAt": "2026-10-05T16:09:29.184Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -150,7 +150,7 @@
     "goneAt": {}
   },
   "prefs": {
-    "lang": "ru",
+    "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
     "step": "making greengrass videos for processing with em",
