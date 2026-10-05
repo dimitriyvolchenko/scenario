@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T17:39:44.703Z",
+  "savedAt": "2026-10-05T17:40:02.666Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -139,7 +139,7 @@
       }
     },
     "dim": "",
-    "spot": "",
+    "spot": "ph0",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
