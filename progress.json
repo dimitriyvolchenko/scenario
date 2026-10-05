@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T16:09:29.184Z",
+  "savedAt": "2026-10-05T16:13:33.924Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -17,7 +17,7 @@
         {
           "id": "xu4kti7y",
           "t": "MAKING GREENGRASS VIDEOS FOR PROCESSING WITH EM",
-          "on": false
+          "on": true
         }
       ]
     },
@@ -123,7 +123,9 @@
       "ph0": "my own steps: one"
     },
     "pflag": {
-      "ph0": {}
+      "ph0": {
+        "edit": true
+      }
     },
     "dim": "",
     "spot": "",
