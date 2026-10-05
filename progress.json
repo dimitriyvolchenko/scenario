@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T16:18:33.005Z",
+  "savedAt": "2026-10-05T17:38:22.672Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -22,7 +22,7 @@
         {
           "id": "xxz942ph",
           "t": "describing the video in the notes",
-          "on": false
+          "on": true
         }
       ]
     },
@@ -129,7 +129,7 @@
     },
     "pflag": {
       "ph0": {
-        "edit": false,
+        "edit": true,
         "more": false
       }
     },
