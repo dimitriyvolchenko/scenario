@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T16:13:33.924Z",
+  "savedAt": "2026-10-05T16:16:20.383Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
-  "total": 529,
+  "total": 530,
   "marks": {},
   "plan": {
     "today": [],
@@ -18,6 +18,11 @@
           "id": "xu4kti7y",
           "t": "MAKING GREENGRASS VIDEOS FOR PROCESSING WITH EM",
           "on": true
+        },
+        {
+          "id": "xxz942ph",
+          "t": "describing the notes of the video",
+          "on": false
         }
       ]
     },
