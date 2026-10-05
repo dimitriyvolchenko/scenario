@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T17:39:13.443Z",
+  "savedAt": "2026-10-05T17:39:44.703Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -134,12 +134,12 @@
     },
     "pflag": {
       "ph0": {
-        "edit": true,
+        "edit": false,
         "more": false
       }
     },
     "dim": "",
-    "spot": "ph0",
+    "spot": "",
     "spotLow": "",
     "pnames": {},
     "tnames": {},
@@ -166,7 +166,7 @@
     "lang": "en",
     "bd": "#B9B2A6",
     "bdw": 1.5,
-    "step": "Describing the video in the notes",
+    "step": "updating the app with capcut making drafts",
     "cool": false,
     "mega": true,
     "unfix": false,
