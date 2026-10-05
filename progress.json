@@ -1,11 +1,11 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T17:38:22.672Z",
+  "savedAt": "2026-10-05T17:39:13.443Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
-  "total": 530,
+  "total": 531,
   "marks": {},
   "plan": {
     "today": [],
@@ -23,6 +23,11 @@
           "id": "xxz942ph",
           "t": "describing the video in the notes",
           "on": true
+        },
+        {
+          "id": "x0z7k2ot",
+          "t": "update this file of steps of the monatage with CapCut here and include here all the steps  of this montage and update this app",
+          "on": false
         }
       ]
     },
