@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-05T16:16:20.383Z",
+  "savedAt": "2026-10-05T16:16:48.792Z",
   "device": "Компьютер",
   "lead": "",
   "done": 0,
@@ -125,7 +125,7 @@
     "log": {},
     "gone": {},
     "wait": {
-      "ph0": "my own steps: one"
+      "ph0": "making greengrass videos for processing with em"
     },
     "pflag": {
       "ph0": {
