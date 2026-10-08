@@ -1,7 +1,7 @@
 {
   "format": "tbv_montage_opening",
   "version": 1,
-  "savedAt": "2026-10-08T08:09:30.108Z",
+  "savedAt": "2026-10-08T08:09:44.426Z",
   "device": "iPhone",
   "lead": "",
   "done": 0,
@@ -169,7 +169,7 @@
     "step": "updating the app with capcut making drafts",
     "cool": false,
     "mega": true,
-    "unfix": false,
+    "unfix": true,
     "focus": false,
     "hideIcons": false,
     "hideDone": false,
